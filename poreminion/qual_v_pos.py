@@ -3,8 +3,6 @@ from collections import defaultdict
 import pandas
 import matplotlib.pyplot as plt
 
-##TODO -- allow it to select all, just temp, just comp
-
 def run(parser, args):
     """ returns dictionary with keys=positions, values=lists of qual scores for that position"""
     qualpos = defaultdict(list)
@@ -39,19 +37,24 @@ def run(parser, args):
 
         fast5.close()
 
-##    for q in sorted(qualpos.keys()):
-##            print '\t'.join(str(e) for e in [q, qualpos[q]])
-    print 'making data'
+    logger.info("Processing data...")
     data = [qualpos[e] for e in sorted(qualpos.keys())]
-##    data = data[:10]
-    print 'boxing'
+    logger.info("Constructing box plot...")
     plt.boxplot(data)
     plt.xlabel("Position in read")
     plt.ylabel("Quality score")
     plt.xticks(rotation=65, fontsize=8)
-    print 'showing'
-##    plt.show()
+    if args.saveas is not None:
+            logger.info("Writing plot to file...")
+            plot_file = args.saveas
+            if plot_file.endswith(".pdf") or plot_file.endswith(".jpg"):
+                    plt.savefig(plot_file)
+            else:
+                    logger.error("Unrecognized extension for %s! Try .pdf or .jpg" % (plot_file))
+                    sys.exit()
 
-    plt.savefig("qualpos.pdf")
+    else:
+            logger.info("Showing plot...")
+            plt.show()
 
 

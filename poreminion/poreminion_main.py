@@ -140,7 +140,11 @@ def main():
                               default=False,
                               action='store_true',
                               help='Only analyze reads with more complement events than template.')
- 
+    parser_qualpos.add_argument('--saveas',
+                             dest='saveas',
+                             metavar='STRING',
+                             help='''Save the plot to a file named filename.extension (e.g. pdf, jpg)''',
+                             default=None)
 
     #######################################################
     # parse the args and call the selected function

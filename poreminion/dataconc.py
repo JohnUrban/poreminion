@@ -64,7 +64,6 @@ def run(parser, args):
                         readcount = int(parameters[0])
                         minsize = int(parameters[1])
                         maxsize = int(parameters[2])
-                       
                 else:   ## find what was not provided out of: N, maxsize, defaultsize 
                         readcount = 0
                         files_processed = 0

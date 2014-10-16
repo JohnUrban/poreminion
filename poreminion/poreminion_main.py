@@ -57,12 +57,12 @@ def main():
                               dest='min_length',
                               default=0,
                               type=int,
-                              help=('Minimum read length to be included in histogram.'))
+                              help=('Minimum read length to be included in analysis.'))
     parser_dataconc.add_argument('--max-length',
                               dest='max_length',
                               default=1000000000,
                               type=int,
-                              help=('Maximum read length to be included in histogram.'))
+                              help=('Maximum read length to be included in analysis.'))
     parser_dataconc.add_argument('--bin-width',
                               dest='bin_width',
                               default=500,

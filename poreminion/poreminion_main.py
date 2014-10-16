@@ -103,25 +103,25 @@ def main():
                               default=None,
                               type=int,
                               help='Only analyze reads from before end timestamp')
-##    parser_dataconc_readfilter = parser.add_mutually_exclusive_group()
-    parser_dataconc.add_argument('--type',
-                              dest='type',
-                              metavar='STRING',
-                              choices=['all', 'fwd', 'rev', '2D', 'fwd,rev'],
-                              default='all',
-                              help='Which type of reads should be analyzed? Def.=all, choices=[all, fwd, rev, 2D, fwd,rev]. Cannot be used with --high-quality or --one-read-per-molecule.')
     parser_dataconc.add_argument('--high-quality',
                               dest='high_quality',
                               default=False,
                               action='store_true',
-                              help='Only analyze reads with more complement events than template. Cannot be used with --type or --one-read-per-molecule.')
-    parser_dataconc.add_argument('-1', '--one-read-per-molecule',
+                              help='Only analyze reads with more complement events than template. Can be used with --type or --one-read-per-molecule to select a specific read type from high quality reads.')
+    parser_dataconc_readfilter = parser.add_mutually_exclusive_group()
+    parser_dataconc_readfilter.add_argument('--type',
+                              dest='type',
+                              metavar='STRING',
+                              choices=['all', 'fwd', 'rev', '2D', 'fwd,rev'],
+                              default='all',
+                              help='Which type of reads should be analyzed? Def.=all, choices=[all, fwd, rev, 2D, fwd,rev]. Is mutually exclusive with --one-read-per-molecule.')
+    parser_dataconc_readfilter.add_argument('-1', '--one-read-per-molecule',
                               dest='single_read',
                               default=False,
                               action='store_true',
                               help='''Only analyze one read per molecule in priority order: 2D -> template -> complement.
                                             That is, if there is a 2D read use that.If not, then try to use template. etc.
-                                            Cannot be used with --high-quality or --type.''')
+                                            Is mutually exclusive with --type.''')
     parser_dataconc.set_defaults(func=run_subtool)
 
 

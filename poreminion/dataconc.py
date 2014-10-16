@@ -71,6 +71,11 @@ def run(parser, args):
                         minsize = float('inf')
                         maxsize = 0
                         for fast5 in Fast5FileSet(args.files):
+                                if args.high_quality:
+                                        if fast5.get_complement_events_count() <= \
+                                           fast5.get_template_events_count():
+                                                fast5.close()
+                                                continue
                                 if args.single_read:
                                         fqs = [fast5.get_fastq()]
                                 else:

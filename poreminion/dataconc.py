@@ -70,7 +70,7 @@ def run(parser, args):
                         files_processed = 0
                         minsize = float('inf')
                         maxsize = 0
-                        for fast5 in Fast5File.Fast5FileSet(args.files):
+                        for fast5 in Fast5FileSet(args.files):
                                 fq = fast5.get_fastq()
                                 if fq is not None:
                                         readcount += 1

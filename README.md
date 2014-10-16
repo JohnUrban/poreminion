@@ -57,12 +57,20 @@ poreminion is named such because it is a minion to (dependent on) poretools and 
 INSTALL:
 =======
 download zip
+
 cd porminion-master/
+
 python setup.py install
 
+
 Dependency installation (assuming Mac OS X):
+
 brew install hdf5
+
 pip install h5py
+
 download poretools zip; cd poretools; python setup.py install
+
 pip install pandas
+
 pip install matplotlib

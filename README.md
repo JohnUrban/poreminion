@@ -48,8 +48,21 @@ matplotlib>=1.4.0
 
 Note
 ======
-poreminion contains tools that have been made with Aaron Quinlan and Nick Loman's poretools in mind, but with requiring additional dependencies on top of what poretools requires (specifically pandas and matplotlib libraries). Some or all of the additional tools in poreminion are also available in my fork of poretools and may eventually become integrated into the main poretools if the authors are interested. For now, poreminion will contain strictly additional functionality on top of poretools (without overlapping features/analyses for nanopore reads).
+poreminion contains tools that have been made with Aaron Quinlan's and Nick Loman's poretools in mind, but with requiring additional dependencies on top of what poretools requires (specifically pandas and matplotlib libraries). Some or all of the additional tools in poreminion are also available in my fork of poretools and may eventually become integrated into the main poretools if the authors are interested. For now, poreminion will contain strictly additional functionality on top of poretools (without overlapping features/analyses for nanopore reads).
 
 What's in a name?
 =================
 poreminion is named such because it is a minion to (dependent on) poretools and because it works with minION data. Therefore it is a play on Oxford Nanopore's play on the word minion. Super meta!
+
+INSTALL:
+=======
+download zip
+cd porminion-master/
+python setup.py install
+
+Dependency installation (assuming Mac OS X):
+brew install hdf5
+pip install h5py
+download poretools zip; cd poretools; python setup.py install
+pip install pandas
+pip install matplotlib

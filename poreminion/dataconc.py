@@ -1,5 +1,5 @@
 import sys
-import poretools.Fast5File as Fast5File
+from poretools.Fast5File import *
 import numpy as np
 import pandas
 import matplotlib.pyplot as plt
@@ -60,7 +60,7 @@ def plot_data_conc(sizes, args):
 def run(parser, args):
 	sizes = []
 	files_processed = 0
-	for fast5 in Fast5File.Fast5FileSet(args.files):
+	for fast5 in Fast5FileSet(args.files):
 		fq = fast5.get_fastq()
 		if fq is not None:
 			sizes.append(len(fq.seq))

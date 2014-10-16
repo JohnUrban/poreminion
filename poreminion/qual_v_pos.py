@@ -1,5 +1,5 @@
 ##from poretools.Fast5File import *
-import Fast5File
+import poretools.Fast5File
 from collections import defaultdict
 import pandas
 import matplotlib.pyplot as plt
@@ -11,7 +11,7 @@ def run(parser, args):
     qualpos = defaultdict(list)
     bin_width = args.bin_width
     
-    for fast5 in Fast5File.Fast5FileSet(args.files):
+    for fast5 in poretools.Fast5File.Fast5FileSet(args.files):
         if args.start_time or args.end_time:
                 read_start_time = fast5.get_start_time()
                 read_end_time = fast5.get_end_time()

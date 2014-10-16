@@ -3,14 +3,27 @@ poreminion
 
 Additional tools for analyzing Oxford Nanopore minION data (built on top of poretools)
 
-- data concentration (DC) plots (poreminion data_conc)
-- cumulative data concentration plots (poreminion data_conc --cumulative)
-- DC plots as % of data (poreminion data_conc --percent  poreminion data_conc --cumulative)
+- data concentration (DC) plots:      
+-         poreminion data_conc
 
-- quality vs. position boxplots (poreminion qualpos)
--   of only 2D reads: poreminion qualpos --type 2D
--   of only template reads: poreminion qualpos --type fwd
--   of only template reads: poreminion qualpos --type rev
+- cumulative data concentration plots:    
+-         poreminion data_conc --cumulative
+
+- DC plots as % of data:
+-         poreminion data_conc --percent  
+-         poreminion data_conc --cumulative --percent
+
+- quality vs. position boxplots:
+-         poreminion qualpos
+
+-   of only 2D reads: 
+-         poreminion qualpos --type 2D
+
+-   of only template reads: 
+-         poreminion qualpos --type fwd
+
+-   of only template reads: 
+-         poreminion qualpos --type rev
 
 
 Requirements

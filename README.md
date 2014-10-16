@@ -7,6 +7,7 @@ Additional tools for analyzing Oxford Nanopore minION data (built on top of pore
 
 >Requirements
 ==========
+
 poretools (https://github.com/arq5x/poretools)
 HDF5 >= 1.8.7 (http://www.hdfgroup.org/HDF5/)
 R >= 3.0.0

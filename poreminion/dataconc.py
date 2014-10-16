@@ -1,5 +1,5 @@
 import sys
-import Fast5File
+import poretools.Fast5File as Fast5File
 import numpy as np
 import pandas
 import matplotlib.pyplot as plt

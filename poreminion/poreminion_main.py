@@ -108,7 +108,7 @@ def main():
                               default=False,
                               action='store_true',
                               help='Only analyze reads with more complement events than template. Can be used with --type or --one-read-per-molecule to select a specific read type from high quality reads.')
-    parser_dataconc_readfilter = parser.add_mutually_exclusive_group()
+    parser_dataconc_readfilter = parser_dataconc.add_mutually_exclusive_group()
     parser_dataconc_readfilter.add_argument('--type',
                               dest='type',
                               metavar='STRING',

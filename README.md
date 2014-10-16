@@ -64,7 +64,7 @@ python setup.py install
 
 
 Dependency installation (assuming Mac OS X):
-
+-------------------------------------------
 brew install hdf5
 
 pip install h5py

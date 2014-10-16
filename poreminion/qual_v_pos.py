@@ -3,6 +3,11 @@ from collections import defaultdict
 import pandas
 import matplotlib.pyplot as plt
 
+#logging
+import logging
+logger = logging.getLogger('poreminion')
+logger.setLevel(logging.INFO)
+
 def run(parser, args):
     """ returns dictionary with keys=positions, values=lists of qual scores for that position"""
     qualpos = defaultdict(list)

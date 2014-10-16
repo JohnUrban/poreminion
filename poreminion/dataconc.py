@@ -7,7 +7,7 @@ from matplotlib.backends.backend_pdf import PdfPages
 
 #logging
 import logging
-logger = logging.getLogger('poretools')
+logger = logging.getLogger('poreminion')
 logger.setLevel(logging.INFO)
 
 def plot_data_conc(sizes, args):

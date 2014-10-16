@@ -83,10 +83,10 @@ def run(parser, args):
                                 if files_processed % 100 == 0:
                                         logger.info("%d files processed." % files_processed)
                                 fast5.close()
-                        if args.min_size:
-                                minsize = int(args.min_size)
-                        if args.max_size:
-                                maxsize = int(args.max_size)
+                        if args.min_length:
+                                minsize = int(args.min_length)
+                        if args.max_length:
+                                maxsize = int(args.max_length)
                 sizes = list(np.random.random_integers(minsize, maxsize, readcount))
                 logger.info("parameters: N=%d, minsize=%d, maxsize=%d" % (readcount, minsize, maxsize))
         else:

@@ -1,6 +1,5 @@
 from poretools.Fast5File import *
 from collections import defaultdict
-import pandas
 import matplotlib.pyplot as plt
 
 #logging

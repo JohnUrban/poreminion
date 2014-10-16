@@ -92,6 +92,28 @@ def main():
                              type=str,
                              help='''--simulate by default will use N=readcount, range=min-to-max. Override this with --parameters N,min,max. e.g. --parameters 350,500,48502''',
                              default=False)
+#
+    parser_dataconc.add_argument('--type',
+                              dest='type',
+                              metavar='STRING',
+                              choices=['all', 'fwd', 'rev', '2D', 'fwd,rev'],
+                              default='all',
+                              help='Which type of reads should be analyzed? Def.=all, choices=[all, fwd, rev, 2D, fwd,rev]')
+    parser_dataconc.add_argument('--start',
+                              dest='start_time',
+                              default=None,
+                              type=int,
+                              help='Only analyze reads from after start timestamp')
+    parser_dataconc.add_argument('--end',
+                              dest='end_time',
+                              default=None,
+                              type=int,
+                              help='Only analyze reads from before end timestamp')
+    parser_dataconc.add_argument('--high-quality',
+                              dest='high_quality',
+                              default=False,
+                              action='store_true',
+                              help='Only analyze reads with more complement events than template.')
 
     parser_dataconc.set_defaults(func=run_subtool)
 

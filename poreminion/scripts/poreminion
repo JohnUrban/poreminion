@@ -1,0 +1,5 @@
+#!/usr/bin/python -E
+
+import poreminion.scripts
+import poreminion.poretools_main
+poreminion.poreminion_main.main()

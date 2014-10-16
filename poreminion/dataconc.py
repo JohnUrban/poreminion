@@ -71,22 +71,26 @@ def run(parser, args):
                         minsize = float('inf')
                         maxsize = 0
                         for fast5 in Fast5FileSet(args.files):
-                                fq = fast5.get_fastq(args.type)
-                                if fq is not None:
-                                        readcount += 1
-                                        size = len(fq.seq)
-                                        if size > maxsize:
-                                                maxsize = size
-                                        elif size < minsize:
-                                                minsize = size
+                                if args.single_read:
+                                        fqs = fast5.get_fastq()
+                                else:
+                                        fqs = fast5.get_fastqs(args.type)
+                                for fq in fqs:
+                                        if fq is not None:
+                                                readcount += 1
+                                                size = len(fq.seq)
+                                                if size > maxsize:
+                                                        maxsize = size
+                                                elif size < minsize:
+                                                        minsize = size
                                 files_processed += 1
                                 if files_processed % 100 == 0:
                                         logger.info("%d files processed." % files_processed)
                                 fast5.close()
-                        if args.min_length:
-                                minsize = int(args.min_length)
-                        if args.max_length:
-                                maxsize = int(args.max_length)
+                                if args.min_length:
+                                        minsize = int(args.min_length)
+                                if args.max_length:
+                                        maxsize = int(args.max_length)
                 sizes = list(np.random.random_integers(minsize, maxsize, readcount))
                 logger.info("parameters: N=%d, minsize=%d, maxsize=%d" % (readcount, minsize, maxsize))
         else:
@@ -107,10 +111,14 @@ def run(parser, args):
                                    fast5.get_template_events_count():
                                         fast5.close()
                                         continue
-                        fq = fast5.get_fastq()
-                        if fq is not None and not (len(fq.seq) < args.min_length or len(fq.seq) > args.max_length):
-                                sizes.append(len(fq.seq))
-                        files_processed += 1
+                        if args.single_read:
+                                fqs = fast5.get_fastq()
+                        else:
+                                fqs = fast5.get_fastqs(args.type)
+                        for fq in fqs:
+                                if fq is not None and not (len(fq.seq) < args.min_length or len(fq.seq) > args.max_length):
+                                        sizes.append(len(fq.seq))
+                                files_processed += 1
                         if files_processed % 100 == 0:
                                 logger.info("%d files processed." % files_processed)
                         fast5.close()

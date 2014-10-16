@@ -72,7 +72,7 @@ def run(parser, args):
                         maxsize = 0
                         for fast5 in Fast5FileSet(args.files):
                                 if args.single_read:
-                                        fqs = fast5.get_fastq()
+                                        fqs = list(fast5.get_fastq())
                                 else:
                                         fqs = fast5.get_fastqs(args.type)
                                 for fq in fqs:
@@ -112,7 +112,7 @@ def run(parser, args):
                                         fast5.close()
                                         continue
                         if args.single_read:
-                                fqs = fast5.get_fastq()
+                                fqs = list(fast5.get_fastq())
                         else:
                                 fqs = fast5.get_fastqs(args.type)
                         for fq in fqs:

@@ -222,7 +222,7 @@ def main():
                              metavar='STRING',
                              help='''Save tab-delimited kmer + counts to file.''',
                              default=None)
-    parser_kmer_readfilter = parser_dataconc.add_mutually_exclusive_group()
+    parser_kmer_readfilter = parser_kmer.add_mutually_exclusive_group()
     parser_kmer_readfilter.add_argument('--type',
                               dest='type',
                               metavar='STRING',

@@ -64,7 +64,10 @@ def kmercount_in_fastx(parser, args, fastx="fasta"):
     for fa in SeqIO.parse(fh, fastx):
         seqLen = len(fa.seq)
         if fa is not None and not (seqLen < args.min_length or seqLen > args.max_length):
-                kmerdict = kmercount_in_string(fa.seq, kmerdict, args.k)
+                kmerdict = kmercount_in_string(str(fa.seq), kmerdict, args.k)
+                if args.rev_comp:
+                    kmerdict = kmercount_in_string(str(fa.reverse_complement().seq), kmerdict, args.k)
+        
     return kmerdict
 
 

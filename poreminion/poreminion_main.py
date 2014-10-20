@@ -205,6 +205,14 @@ def main():
                               type=str,
                               help=('''Specify "--fasta file.fq" for analyzing a fastq file instead of fast5dir/.
                                     While min and max length arguments remain meaningful for fastq files, the following arguments do not: start time, end time, high quality, type, single read per molecule.'''))
+    parser_kmer.add_argument('--rev-comp',
+                              dest='rev_comp',
+                              default=False,
+                              action="store_true",
+                              help='''Created to be used with --fasta and --fastq options.
+                                    When creating kmer counts, it counts both the fwd and reverse complement kmers.
+                                    For now, it does nothing when used with fast5 dirs (minION data files).''')
+
 ##    parser_kmer_output = parser_kmer.add_mutually_exclusive_group()
 ##    parser_kmer_output.add_argument('-t', '--table',
 ##                              dest='table',

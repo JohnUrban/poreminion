@@ -56,7 +56,7 @@ def twoTablePlot_mpl(parser, args):
     ## make sure they have same set of kmers, for any missing elements in set A or B, add it with count of 0
     for key in kmerdict1:
         kmerdict2[key]
-    for key in kmerdict2[]:
+    for key in kmerdict2:
         kmerdict1[key]
     ## make approp data structures
     data1 = defaultdict(list)

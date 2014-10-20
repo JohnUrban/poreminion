@@ -16,7 +16,7 @@ def singleTablePlot_gg(parser, args):
     r = robjects.r
     r.library("ggplot2")
     grdevices = importr('grDevices')
-    kmerdict = kmercount_in_table(args.table)
+    kmerdict = kmercount_in_table(args.table1)
     data = defaultdict(list)
     numKmers = len(kmerdict)
     for k in sorted(kmerdict.keys()):
@@ -38,7 +38,7 @@ def singleTablePlot_mpl(parser, args):
     r = robjects.r
     r.library("ggplot2")
     grdevices = importr('grDevices')
-    kmerdict = kmercount_in_table(args.table)
+    kmerdict = kmercount_in_table(args.table1)
     data = defaultdict(list)
     numKmers = len(kmerdict)
     for k in sorted(kmerdict.keys()):

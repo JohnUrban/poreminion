@@ -270,8 +270,8 @@ def main():
     ##########
     parser_kmerplot = subparsers.add_parser('kmerplot',
                                         help='NEW FEATURE -- NOT YET STABLE/FINISHED. plot kmer counts in reads or reference.')
-    parser_kmerplot.add_argument('files', metavar='FILES', nargs='+',
-                             help='The input FAST5 files.')
+##    parser_kmerplot.add_argument('files', metavar='FILES', nargs='+',
+##                             help='The input FAST5 files.')
 
     parser_kmerplot.add_argument('-t1', '--kmer-count-in-reads',
                              dest='table1',

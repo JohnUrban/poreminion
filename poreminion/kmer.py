@@ -37,30 +37,30 @@ def run(parser, args):
                 if args.end_time and args.end_time < read_end_time:
                         fast5.close()
                         continue
-            if args.high_quality:
-                if fast5.get_complement_events_count() <= \
-                   fast5.get_template_events_count():
-                        fast5.close()
-                        continue
-            if args.single_read:
-                fas = [fast5.get_fasta()]
-            else:
-                fas = fast5.get_fastas(args.type)
-            for fa in fas:
-                seqLength = len(fa.seq)
-                if fa is not None and not (seqLength < args.min_length or seqLength > args.max_length):
-                        print seqLen, fa.seq[:10] ## DELETE this line
-                        kmerdict = kmercount(fa.seq, kmerdict, args.k)
-                files_processed += 1
-            if files_processed % 100 == 0:
-                    logger.info("%d files processed." % files_processed)
-            fast5.close()
-        if args.saveas:
-            fhout = open(args.saveas, 'w')
-            writekmer(kmerdict, fhout)
-            fhout.close()
+        if args.high_quality:
+            if fast5.get_complement_events_count() <= \
+               fast5.get_template_events_count():
+                    fast5.close()
+                    continue
+        if args.single_read:
+            fas = [fast5.get_fasta()]
         else:
-            writekmer(kmerdict)
+            fas = fast5.get_fastas(args.type)
+        for fa in fas:
+            seqLength = len(fa.seq)
+            if fa is not None and not (seqLength < args.min_length or seqLength > args.max_length):
+                    print seqLen, fa.seq[:10] ## DELETE this line
+                    kmerdict = kmercount(fa.seq, kmerdict, args.k)
+            files_processed += 1
+        if files_processed % 100 == 0:
+                logger.info("%d files processed." % files_processed)
+        fast5.close()
+        if args.saveas:
+        fhout = open(args.saveas, 'w')
+        writekmer(kmerdict, fhout)
+        fhout.close()
+        else:
+        writekmer(kmerdict)
 
         
     

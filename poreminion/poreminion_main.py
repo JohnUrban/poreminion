@@ -204,7 +204,7 @@ def main():
                               default=None,
                               type=str,
                               help=('''Specify "--fasta file.fq" for analyzing a fastq file instead of fast5dir/.
-                                    While min and max length arguments remain meaningful for fastq files, the following arguments do not: start time, end time, high quality, type, single read per molecule.''')
+                                    While min and max length arguments remain meaningful for fastq files, the following arguments do not: start time, end time, high quality, type, single read per molecule.'''))
 ##    parser_kmer_output = parser_kmer.add_mutually_exclusive_group()
 ##    parser_kmer_output.add_argument('-t', '--table',
 ##                              dest='table',

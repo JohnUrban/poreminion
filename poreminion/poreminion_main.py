@@ -207,12 +207,6 @@ def main():
                               default=1000,
                               type=int,
                               help=('The width of bins (default: 1000 bp).'))
-    parser_kmer.add_argument('--type',
-                              dest='type',
-                              metavar='STRING',
-                              choices=['all', 'fwd', 'rev', '2D', 'fwd,rev'],
-                              default='all',
-                              help='Which type of reads should be analyzed? Def.=all, choices=[all, fwd, rev, 2D, fwd,rev]')
     parser_kmer.add_argument('--start',
                               dest='start_time',
                               default=None,
@@ -233,6 +227,21 @@ def main():
                              metavar='STRING',
                              help='''Save tab-delimited kmer + counts to file.''',
                              default=None)
+    parser_kmer_readfilter = parser_dataconc.add_mutually_exclusive_group()
+    parser_kmer_readfilter.add_argument('--type',
+                              dest='type',
+                              metavar='STRING',
+                              choices=['all', 'fwd', 'rev', '2D', 'fwd,rev'],
+                              default='all',
+                              help='Which type of reads should be analyzed? Def.=all, choices=[all, fwd, rev, 2D, fwd,rev]. Is mutually exclusive with --one-read-per-molecule.')
+    parser_kmer_readfilter.add_argument('-1', '--one-read-per-molecule',
+                              dest='single_read',
+                              default=False,
+                              action='store_true',
+                              help='''Only analyze one read per molecule in priority order: 2D -> template -> complement.
+                                            That is, if there is a 2D read use that.If not, then try to use template. etc.
+                                            Is mutually exclusive with --type.''')
+    parser_dataconc.set_defaults(func=run_subtool)
 
     
 

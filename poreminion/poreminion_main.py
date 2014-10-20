@@ -19,6 +19,8 @@ def run_subtool(parser, args):
         import qual_v_pos as submodule
     elif args.command == 'kmer':
         import kmer as submodule
+    elif args.command == 'kmerplot':
+        import kmerplot as submodule
 
     # run the chosen submodule.
     submodule.run(parser, args)
@@ -134,7 +136,6 @@ def main():
                                         help='Get the qual score distribution over positions in reads')
     parser_qualpos.add_argument('files', metavar='FILES', nargs='+',
                              help='The input FAST5 files.')
-    parser_qualpos.set_defaults(func=run_subtool)
     parser_qualpos.add_argument('--min-length',
                               dest='min_length',
                               default=0,
@@ -177,34 +178,46 @@ def main():
                              help='''Save the plot to a file named filename.extension (e.g. pdf, jpg)''',
                              default=None)
 
+    parser_qualpos.set_defaults(func=run_subtool)
 
 
     ##########
     # kmerCounting
     ##########
     parser_kmer = subparsers.add_parser('kmer',
-                                        help='NEW FEATURE -- NOT YET STABLE. Count kmers in reads or reference.')
+                                        help='NEW FEATURE -- NOT YET STABLE/FINISHED. Count kmers in reads or reference.')
     parser_kmer.add_argument('files', metavar='FILES', nargs='+',
                              help='The input FAST5 files.')
-    parser_kmer.set_defaults(func=run_subtool)
     parser_kmer.add_argument('-k', '--kmersize',
                               dest='k',
                               default=5,
                               type=int,
                               help=('Kmer size. Default = 5.'))
-    parser_kmer_output = parser_kmer.add_mutually_exclusive_group()
-    parser_kmer_output.add_argument('-t', '--table',
-                              dest='table',
-                              default=True,
-                              action='store_true',
-                              help=('''Output option: report tab-delimited table of kmer, count, and proportion of all kmers seen.
-                                    Default = True (to stdout). Use --saveas to specify file to save to.'''))
-    parser_kmer_output.add_argument('-p', '--plot',
-                              dest='plot',
-                              default=False,
-                              action='store_true',
-                              help=('''Output option: show or write out plot.
-                                    Default = False (to stdout). Use --saveas to specify file to save to.'''))
+    parser_kmer.add_argument('--fasta',
+                              dest='fasta',
+                              default=None,
+                              type=str,
+                              help=('''Specify "--fasta file.fa" for analyzing a fasta file instead of fast5dir/.
+                                    While min and max length arguments remain meaningful for fasta files, the following arguments do not: start time, end time, high quality, type, single read per molecule.'''))
+    parser_kmer.add_argument('--fastq',
+                              dest='fastq',
+                              default=None,
+                              type=str,
+                              help=('''Specify "--fasta file.fq" for analyzing a fastq file instead of fast5dir/.
+                                    While min and max length arguments remain meaningful for fastq files, the following arguments do not: start time, end time, high quality, type, single read per molecule.''')
+##    parser_kmer_output = parser_kmer.add_mutually_exclusive_group()
+##    parser_kmer_output.add_argument('-t', '--table',
+##                              dest='table',
+##                              default=True,
+##                              action='store_true',
+##                              help=('''Output option: report tab-delimited table of kmer, count, and proportion of all kmers seen.
+##                                    Default = True (to stdout). Use --saveas to specify file to save to.'''))
+##    parser_kmer_output.add_argument('-p', '--plot',
+##                              dest='plot',
+##                              default=False,
+##                              action='store_true',
+##                              help=('''Output option: show or write out plot.
+##                                    Default = False (to stdout). Use --saveas to specify file to save to.'''))
     parser_kmer.add_argument('--min-length',
                               dest='min_length',
                               default=0,
@@ -251,6 +264,44 @@ def main():
                                             Is mutually exclusive with --type.''')
     parser_kmer.set_defaults(func=run_subtool)
 
+    
+    ##########
+    # kmerplotting
+    ##########
+    parser_kmerplot = subparsers.add_parser('kmerplot',
+                                        help='NEW FEATURE -- NOT YET STABLE/FINISHED. plot kmer counts in reads or reference.')
+    parser_kmerplot.add_argument('files', metavar='FILES', nargs='+',
+                             help='The input FAST5 files.')
+
+    parser_kmer.add_argument('-t1', '--kmer-count-in-reads',
+                             dest='table1',
+                             type=str,
+                             help='''Provide path to file with kmer count table from reads (or any kmer count table).
+                                    This argument is required and when used alone, just generates a bar plot of kmer counts.''',
+                             default=None)
+    
+    parser_kmer.add_argument('-t2', '--kmer-count-in-reference',
+                             dest='table2',
+                             type=str,
+                             help='''Provide path to file with kmer count table from reference sequence (or any second kmer count table).
+                                    This argument is not required and if used, results in a scatterplot of the 2 kmer count tables.''',
+                             default=None)
+    parser_kmer.add_argument('--matplotlib',
+                             dest='mpl',
+                             action='store_true',
+                             help='''Temp option: plot in matplotlib''',
+                             default=False)
+    parser_kmer.add_argument('--ggplot2',
+                             dest='gg',
+                             action='store_true',
+                             help='''Temp option: plot in ggplot2''',
+                             default=False)
+    parser_kmer.add_argument('--saveas',
+                             dest='saveas',
+                             metavar='STRING',
+                             help='''Save to file.''',
+                             default=None)
+    parser_kmer.set_defaults(func=run_subtool)
     
 
 

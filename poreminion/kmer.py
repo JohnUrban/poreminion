@@ -4,10 +4,7 @@ import numpy as np
 import pandas
 import matplotlib.pyplot as plt
 from collections import defaultdict
-try:
-    from cStringIO import StringIO
-except:
-    from StringIO import StringIO
+from Bio import SeqIO
 
 ## attempt 1: brute force
 def kmercount_in_string(string, kmerdict, k):
@@ -24,7 +21,7 @@ def writekmer(kmerdict, fileobj=sys.stdout):
         fileobj.write(kmer + '\t' + str(kmerdict[kmer]) + '\n')
 
 
-def kmercount_in_files(parser, args):
+def kmercount_in_fast5(parser, args):
     files_processed = 0
     kmerdict = defaultdict(int)
     for fast5 in Fast5FileSet(args.files):
@@ -57,9 +54,35 @@ def kmercount_in_files(parser, args):
     return kmerdict
 
 
+def kmercount_in_fastx(parser, args, fastx="fasta"):
+    kmerdict = defaultdict(int)
+    if fastx == "fasta":
+        fh = args.fasta
+    elif fastx == "fastq":
+        fh = args.fastq
+    for fa in SeqIO.parse(fh, fastx):
+        seqLen = len(fa.seq)
+        if fa is not None and not (seqLen < args.min_length or seqLen > args.max_length):
+                kmerdict = kmercount_in_string(fa.seq, kmerdict, args.k)
+    return kmerdict
+
+
+def kmercount_in_table(kmerCountFile):
+    ''' Input is a kmer count table.'''
+    kmerdict = defaultdict(int)
+    fh = kmerCountFile
+    for line in open(fh, 'r'):
+        kmer, count, prop = line.rstrip().split('\t')
+        kmerdict[kmer] = count
+    return kmerdict
 
 def run(parser, args):
-    kmerdict = kmercount_in_files(parser, args)
+    if args.fasta:
+        kmerdict = kmercount_in_fastx(parser, args, fastx="fasta")
+    elif args.fastq:
+        kmerdict = kmercount_in_fastx(parser, args, fastx="fastq")
+    else:
+        kmerdict = kmercount_in_fast5(parser, args)
     if args.saveas:
         fhout = open(args.saveas, 'w')
         writekmer(kmerdict, fhout)

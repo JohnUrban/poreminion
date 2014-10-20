@@ -17,8 +17,9 @@ def kmercount_in_string(string, kmerdict, k):
 
 def writekmer(kmerdict, fileobj=sys.stdout):
     ''' kmerdict is a dict/default dict object'''
+    total = float(sum(kmerdict.values()))
     for kmer in sorted(kmerdict.keys()): ## this could be a big memory suck
-        fileobj.write(kmer + '\t' + str(kmerdict[kmer]) + '\n')
+        fileobj.write(kmer + '\t' + str(kmerdict[kmer]) + '\t' + str(kmerdict[kmer]/total) + '\n')
 
 
 def kmercount_in_fast5(parser, args):

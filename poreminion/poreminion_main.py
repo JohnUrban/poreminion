@@ -10,7 +10,8 @@ import logging
 logger = logging.getLogger('poreminion')
 
 # poreminion imports
-import poreminion.version
+##import poreminion.version
+import version
 
 def run_subtool(parser, args):
     if args.command == 'data_conc':

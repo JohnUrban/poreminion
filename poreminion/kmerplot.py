@@ -24,10 +24,10 @@ def singleTablePlot_gg(parser, args):
         data['counts'].append(kmerdict[k])
     df = robjects.DataFrame(data)
     gp = ggplot2.ggplot(df)
-    pp = gp + ggplot2.geom_bar(stat="identity")
-##    pp = gp + ggplot2.aes_string(x=range(1,numKmers+1),y=counts) \
-##         + ggplot2.geom_bar(stat="identity") \
-##         + ggplot2.scale_x_continuous(name="kmer", breaks=0.5+(range(1,numKmers+1)), labels=kmers)
+##    pp = gp + ggplot2.geom_bar(stat="identity")
+    pp = gp + ggplot2.aes_string(x=range(1,numKmers+1),y=data['counts']) \
+         + ggplot2.geom_bar(stat="identity") \
+         + ggplot2.scale_x_continuous(name="kmer", breaks=0.5+(range(1,numKmers+1)), labels=kmers)
     pp.plot()
     print('Type enter to exit.')
     raw_input()

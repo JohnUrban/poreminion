@@ -192,7 +192,7 @@ def main():
                               dest='k',
                               default=5,
                               type=int,
-                              help=('Kmer size. Default = 5.'))
+                              help=('Kmer size. Default = 5. Sizes 1-7 work well with kmerplot on regular Mac OS. Up to 10 is possible. After that it might require too much memory for kmerplot on regular Mac OS.'))
     parser_kmer.add_argument('--fasta',
                               dest='fasta',
                               default=None,
@@ -307,7 +307,7 @@ def main():
     parser_kmerplot.add_argument('--saveas',
                              dest='saveas',
                              metavar='STRING',
-                             help='''Save to file.''',
+                             help='''Save to file. e.g. --saveas "filename.extension" where extension can be only pdf and jpg for now.''',
                              default=None)
     parser_kmerplot.set_defaults(func=run_subtool)
     

@@ -47,8 +47,8 @@ def run(parser, args):
         else:
             fas = fast5.get_fastas(args.type)
         for fa in fas:
-            seqLength = len(fa.seq)
-            if fa is not None and not (seqLength < args.min_length or seqLength > args.max_length):
+            seqLen = len(fa.seq)
+            if fa is not None and not (seqLen < args.min_length or seqLen > args.max_length):
                     print seqLen, fa.seq[:10] ## DELETE this line
                     kmerdict = kmercount(fa.seq, kmerdict, args.k)
             files_processed += 1

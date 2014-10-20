@@ -273,35 +273,35 @@ def main():
     parser_kmerplot.add_argument('files', metavar='FILES', nargs='+',
                              help='The input FAST5 files.')
 
-    parser_kmer.add_argument('-t1', '--kmer-count-in-reads',
+    parser_kmerplot.add_argument('-t1', '--kmer-count-in-reads',
                              dest='table1',
                              type=str,
                              help='''Provide path to file with kmer count table from reads (or any kmer count table).
                                     This argument is required and when used alone, just generates a bar plot of kmer counts.''',
                              default=None)
     
-    parser_kmer.add_argument('-t2', '--kmer-count-in-reference',
+    parser_kmerplot.add_argument('-t2', '--kmer-count-in-reference',
                              dest='table2',
                              type=str,
                              help='''Provide path to file with kmer count table from reference sequence (or any second kmer count table).
                                     This argument is not required and if used, results in a scatterplot of the 2 kmer count tables.''',
                              default=None)
-    parser_kmer.add_argument('--matplotlib',
+    parser_kmerplot.add_argument('--matplotlib',
                              dest='mpl',
                              action='store_true',
                              help='''Temp option: plot in matplotlib''',
                              default=False)
-    parser_kmer.add_argument('--ggplot2',
+    parser_kmerplot.add_argument('--ggplot2',
                              dest='gg',
                              action='store_true',
                              help='''Temp option: plot in ggplot2''',
                              default=False)
-    parser_kmer.add_argument('--saveas',
+    parser_kmerplot.add_argument('--saveas',
                              dest='saveas',
                              metavar='STRING',
                              help='''Save to file.''',
                              default=None)
-    parser_kmer.set_defaults(func=run_subtool)
+    parser_kmerplot.set_defaults(func=run_subtool)
     
 
 

@@ -74,7 +74,7 @@ def kmercount_in_table(kmerCountFile):
     fh = kmerCountFile
     for line in open(fh, 'r'):
         kmer, count, prop = line.rstrip().split('\t')
-        kmerdict[kmer] = count
+        kmerdict[kmer] = int(count)
     return kmerdict
 
 def run(parser, args):

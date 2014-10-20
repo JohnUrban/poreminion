@@ -46,6 +46,7 @@ def singleTablePlot_mpl(parser, args):
         data['kmers'].append(k)
         data['counts'].append(kmerdict[k])
     plt.bar(left=range(1,numKmers+1), height=data['counts'], width=1.0)
+    plt.show()
     
     
 def run(parser, args):

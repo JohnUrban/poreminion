@@ -17,6 +17,8 @@ def run_subtool(parser, args):
         import dataconc as submodule
     elif args.command == 'qualpos':
         import qual_v_pos as submodule
+    elif args.command == 'kmer':
+        import kmer as submodule
 
     # run the chosen submodule.
     submodule.run(parser, args)
@@ -174,6 +176,66 @@ def main():
                              metavar='STRING',
                              help='''Save the plot to a file named filename.extension (e.g. pdf, jpg)''',
                              default=None)
+
+
+
+    ##########
+    # kmerCounting
+    ##########
+    parser_kmer = subparsers.add_parser('kmer',
+                                        help='NEW FEATURE -- NOT YET STABLE. Count kmers in reads or reference.')
+    parser_kmer.add_argument('files', metavar='FILES', nargs='+',
+                             help='The input FAST5 files.')
+    parser_kmer.set_defaults(func=run_subtool)
+    parser_kmer.add_argument('-k', '--kmersize',
+                              dest='k',
+                              default=5,
+                              type=int,
+                              help=('Kmer size. Default = 5.'))
+    parser_kmer.add_argument('--min-length',
+                              dest='min_length',
+                              default=0,
+                              type=int,
+                              help=('Minimum read length to be included in analysis.'))
+    parser_kmer.add_argument('--max-length',
+                              dest='max_length',
+                              default=1000000000,
+                              type=int,
+                              help=('Maximum read length to be included in analysis.'))
+    parser_kmer.add_argument('--bin-width',
+                              dest='bin_width',
+                              default=1000,
+                              type=int,
+                              help=('The width of bins (default: 1000 bp).'))
+    parser_kmer.add_argument('--type',
+                              dest='type',
+                              metavar='STRING',
+                              choices=['all', 'fwd', 'rev', '2D', 'fwd,rev'],
+                              default='all',
+                              help='Which type of reads should be analyzed? Def.=all, choices=[all, fwd, rev, 2D, fwd,rev]')
+    parser_kmer.add_argument('--start',
+                              dest='start_time',
+                              default=None,
+                              type=int,
+                              help='Only analyze reads from after start timestamp')
+    parser_kmer.add_argument('--end',
+                              dest='end_time',
+                              default=None,
+                              type=int,
+                              help='Only analyze reads from before end timestamp')
+    parser_kmer.add_argument('--high-quality',
+                              dest='high_quality',
+                              default=False,
+                              action='store_true',
+                              help='Only analyze reads with more complement events than template.')
+    parser_kmer.add_argument('--saveas',
+                             dest='saveas',
+                             metavar='STRING',
+                             help='''Save tab-delimited kmer + counts to file.''',
+                             default=None)
+
+    
+
 
     #######################################################
     # parse the args and call the selected function

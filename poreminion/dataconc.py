@@ -3,7 +3,7 @@ from poretools.Fast5File import *
 import numpy as np
 import pandas
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_pdf import PdfPages
+##from matplotlib.backends.backend_pdf import PdfPages
 
 #logging
 import logging

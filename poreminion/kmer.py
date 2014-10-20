@@ -10,7 +10,7 @@ except:
     from StringIO import StringIO
 
 ## attempt 1: brute force
-def kmercount(string, kmerdict, k):
+def kmercount_in_string(string, kmerdict, k):
     ''' kmerdict is a defaultdict(int)
         It can take both empty and non-empty kmerdicts
         returns update of the input kmerdict given the input string and k'''
@@ -24,7 +24,7 @@ def writekmer(kmerdict, fileobj=sys.stdout):
         fileobj.write(kmer + '\t' + str(kmerdict[kmer]) + '\n')
 
 
-def run(parser, args):
+def kmercount_in_files(parser, args):
     files_processed = 0
     kmerdict = defaultdict(int)
     for fast5 in Fast5FileSet(args.files):
@@ -49,12 +49,17 @@ def run(parser, args):
         for fa in fas:
             seqLen = len(fa.seq)
             if fa is not None and not (seqLen < args.min_length or seqLen > args.max_length):
-                    print seqLen, fa.seq[:10] ## DELETE this line
-                    kmerdict = kmercount(fa.seq, kmerdict, args.k)
+                    kmerdict = kmercount_in_string(fa.seq, kmerdict, args.k)
             files_processed += 1
         if files_processed % 100 == 0:
                 logger.info("%d files processed." % files_processed)
         fast5.close()
+    return kmerdict
+
+
+
+def run(parser, args):
+    kmerdict = kmercount_in_files(parser, args)
     if args.saveas:
         fhout = open(args.saveas, 'w')
         writekmer(kmerdict, fhout)

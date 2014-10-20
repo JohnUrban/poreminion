@@ -192,6 +192,19 @@ def main():
                               default=5,
                               type=int,
                               help=('Kmer size. Default = 5.'))
+    parser_kmer_output = parser_kmer.add_mutually_exclusive_group()
+    parser_kmer_output.add_argument('-t', '--table',
+                              dest='table',
+                              default=True,
+                              action='store_true',
+                              help=('''Output option: report tab-delimited table of kmer, count, and proportion of all kmers seen.
+                                    Default = True (to stdout). Use --saveas to specify file to save to.'''))
+    parser_kmer_output.add_argument('-p', '--plot',
+                              dest='plot',
+                              default=False,
+                              action='store_true',
+                              help=('''Output option: show or write out plot.
+                                    Default = False (to stdout). Use --saveas to specify file to save to.'''))
     parser_kmer.add_argument('--min-length',
                               dest='min_length',
                               default=0,

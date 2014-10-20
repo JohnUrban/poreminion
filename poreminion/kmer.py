@@ -55,11 +55,11 @@ def run(parser, args):
         if files_processed % 100 == 0:
                 logger.info("%d files processed." % files_processed)
         fast5.close()
-        if args.saveas:
+    if args.saveas:
         fhout = open(args.saveas, 'w')
         writekmer(kmerdict, fhout)
         fhout.close()
-        else:
+    else:
         writekmer(kmerdict)
 
         

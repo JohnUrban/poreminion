@@ -54,22 +54,33 @@ def ensureEqualKmerSets(kmerdict1, kmerdict2):
         kmerdict1[key]
     return kmerdict1, kmerdict2
 
+
 def kmerDictToPlotData(kmerdict):
     data = defaultdict(list)
     for k in sorted(kmerdict.keys()):
         data['kmers'].append(k)
         data['counts'].append(kmerdict[k])
     return data
-        
+
+def totalKmerCount(kmerdict):
+    total = 0
+    for v in kmerdict.values():
+        total += v
+    return total
+
+def readInTwoKmerTables(parser, args):
+    kmerdict1 = kmercount_in_table(args.table1)
+    kmerdict2 = kmercount_in_table(args.table2)
+    ## ensure equal kmer sets
+    kmerdict1, kmerdict2 = ensureEqualKmerSets(kmerdict1, kmerdict2)
+    return kmerdict1, kmerdict2
+
 def twoTablePlot_mpl(parser, args):
     ''' kmerdict is a defaultdict(int)
         It can take both empty and non-empty kmerdicts
         returns update of the input kmerdict given the input string and k'''
-    kmerdict1 = kmercount_in_table(args.table1)
-    kmerdict2 = kmercount_in_table(args.table2)
-
-    ## ensure equal kmer sets
-    kmerdict1, kmerdict2 = ensureEqualKmerSets(kmerdict1, kmerdict2)
+    ## read in and equilibrate the 2 kmer count tables
+    kmerdict1, kmerdict2 = readInTwoKmerTables(parser, args)
     
     ## make approp data structures
     data1 = kmerDictToPlotData(kmerdict1)

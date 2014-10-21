@@ -21,6 +21,8 @@ def run_subtool(parser, args):
         import kmer as submodule
     elif args.command == 'kmerplot':
         import kmerplot as submodule
+    elif args.command == 'kmerdiff':
+        import kmerdiff as submodule
 
     # run the chosen submodule.
     submodule.run(parser, args)
@@ -312,6 +314,64 @@ def main():
     parser_kmerplot.set_defaults(func=run_subtool)
     
 
+    ##########
+    # kmer diff abundance
+    ##########
+    parser_kmerdiff = subparsers.add_parser('kmerdiff',
+                                        help='NEW FEATURE -- NOT YET STABLE/FINISHED. plot kmer counts in reads or reference.')
+
+    parser_kmerdiff.add_argument('-t1', '--kmer-count-in-reads',
+                             dest='table1',
+                             type=str,
+                             help='''Provide path to file with kmer count table from reads (or any kmer count table).
+                                    This argument is required and when used alone, just generates a bar plot of kmer counts.''',
+                             default=None)
+    
+    parser_kmerdiff.add_argument('-t2', '--kmer-count-in-reference',
+                             dest='table2',
+                             type=str,
+                             help='''Provide path to file with kmer count table from reference sequence (or any second kmer count table).
+                                    This argument is not required and if used, results in a scatterplot of the 2 kmer count tables.''',
+                             default=None)
+    parser_kmerdiff.add_argument('--saveas',
+                             dest='saveas',
+                             metavar='STRING',
+                             help='''Save to file. e.g. --saveas "filename.extension" where extension can be only pdf and jpg for now.''',
+                             default=None)
+    parser_kmerdiff.add_argument('-bcv', '--square-root-dispersion',
+                             dest='bcv',
+                             type=float,
+                             help='''When there are no replicates in edgeR, dispersion must be determined by the user.
+                                    The default is 0.2. Other values to try could be 0.01-0.4 (or any).
+                                    p-values will be sensitive to choice of bcv. Fold change will not.''',
+                             default=0.2)
+
+    parser_kmerdiff.add_argument('--volcano',
+                             dest='volcano',
+                             type=str,
+                             help='''If you want the analysis to generate a volcano plot,
+                                    (log(fold change) vs. -log10(pvalue)), then use this flag
+                                    and provide the name and extension of volcano plot file (e.g. volcano.jpg).''',
+                             default=None)
+    parser_kmerdiff.add_argument('--smear',
+                             dest='smear',
+                             type=str,
+                             help='''If you want the analysis to generate a smear plot,
+                                    (log(fold change) vs. log(CPM)), then use this flag
+                                    and provide the name and extension of smear plot file (e.g. smear.jpg).''',
+                             default=None)
+    parser_kmerdiff.add_argument('--nt-content',
+                             dest='nt_content',
+                             type=str,
+                             help='''If you want the analysis to generate a table analyzing the nucleotide content
+                                    of kmers >= abs(fold change) and pval <= p, then use this flag with those values as in these
+                                    examples: (a) --nt-content fc:2.5,p:0.001 (b) --nt-content fc:2,fdr:0.1)''',
+                             default=None)
+    
+    parser_kmerdiff.set_defaults(func=run_subtool)
+
+
+    
 
     #######################################################
     # parse the args and call the selected function

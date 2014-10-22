@@ -1,3 +1,7 @@
+## TODO: Clean up this file. Do away with unused fxns. Do away with need for "Total". etc.
+##      Break run edger up -- have it return the DF, have each operation (e.g. volcano plot) be its own fxn
+##      Have run() be the only fxn that handles parser/arg
+
 """Calculate differentially represented kmers using EdgeR from bioconductor.
 
 http://bioconductor.org/packages/2.5/bioc/html/edgeR.html

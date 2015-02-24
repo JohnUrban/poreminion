@@ -1,7 +1,21 @@
 poreminion
 ==========
 
-Additional tools for analyzing Oxford Nanopore minION data (built on top of poretools)
+Additional tools for analyzing Oxford Nanopore minION data (built on top of poretools) by John Urban.
+Warning: I only work on PoreMinion every once in a while and some tools are un-finished and/or broken.
+Current tools I know to work are:
+	- data_conc
+	- qualpos
+	- qualdist
+	- kmer
+	- kmerplot 
+	- kmerdiff
+	- winner
+	- pct2d
+	- uncalled
+	- numevents
+The 'align' subtool is something I tooled with, which was just going to be a wrapper over various aligners. I believe it is not in working order.
+Others such as events_stats, get_events, get_model, get_metadata are also un-finished. I have similar functions in another suite that I will make available soon.
 
 - data concentration (DC) plots:      
 -         poreminion data_conc
@@ -48,11 +62,9 @@ matplotlib>=1.4.0
 
 Note
 ======
-poreminion contains tools that have been made with Aaron Quinlan's and Nick Loman's poretools in mind, but with requiring additional dependencies on top of what poretools requires (specifically pandas and matplotlib libraries). Some or all of the additional tools in poreminion are also available in my fork of poretools and may eventually become integrated into the main poretools if the authors are interested. For now, poreminion will contain strictly additional functionality on top of poretools (without overlapping features/analyses for nanopore reads).
+PoreMinion contains some tools that have been made on top of Aaron Quinlan's and Nick Loman's poretools and others that use other software.
+PoreMinion will requiring additional dependencies on top of what poretools requires (specifically pandas and matplotlib libraries). 
 
-What's in a name?
-=================
-poreminion is named such because it is a minion to (dependent on) poretools and because it works with minION data. Therefore it is a play on Oxford Nanopore's play on the word minion. Super meta!
 
 INSTALL:
 =======

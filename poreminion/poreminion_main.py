@@ -23,6 +23,26 @@ def run_subtool(parser, args):
         import kmerplot as submodule
     elif args.command == 'kmerdiff':
         import kmerdiff as submodule
+    elif args.command == 'events_stats':
+        import events_stats as submodule
+    elif args.command == 'get_events':
+        import events_stats as submodule
+    elif args.command == 'get_model':
+        import events_stats as submodule
+    elif args.command == 'get_metadata':
+        import events_stats as submodule
+    elif args.command == 'align':
+        import align as submodule
+    elif args.command == 'winner':
+        import winner as submodule
+    elif args.command == 'qualdist':
+        import qualdist as submodule
+    elif args.command == 'pct2d':
+        import pct2D as submodule
+    elif args.command == 'uncalled':
+        import findUncalled as submodule
+    elif args.command == 'numevents':
+        import numevents as submodule
 
     # run the chosen submodule.
     submodule.run(parser, args)
@@ -174,6 +194,14 @@ def main():
                               default=False,
                               action='store_true',
                               help='Only analyze reads with more complement events than template.')
+    parser_qualpos.add_argument('--zscore',
+                              default=False,
+                              action='store_true',
+                              help='For each read, normalize each bucket score to the mean and stdDev of all scores in read. Z = (bucketScore-mean)/stdDev')
+    parser_qualpos.add_argument('--qualVsLen',
+                          default=False,
+                          action='store_true',
+                          help='Scatter plot mean score (y-axis) vs. read length (x-axis)')
     parser_qualpos.add_argument('--saveas',
                              dest='saveas',
                              metavar='STRING',
@@ -181,6 +209,28 @@ def main():
                              default=None)
 
     parser_qualpos.set_defaults(func=run_subtool)
+
+
+
+
+    ##########
+    # qualdist
+    ##########
+    parser_qualdist = subparsers.add_parser('qualdist',
+                                        help='Get the qual score composition of a set of FAST5 files')
+    parser_qualdist.add_argument('files', metavar='FILES', nargs='+',
+                             help='The input FAST5 files.')
+    parser_qualdist.add_argument('--type',
+                              dest='type',
+                              metavar='STRING',
+                              choices=['all', 'fwd', 'rev', '2D', 'fwd,rev'],
+                              default='all',
+                              help='Which type of reads should be analyzed? Def.=all, choices=[all, fwd, rev, 2D, fwd,rev]. Is mutually exclusive with --one-read-per-molecule.')
+ 
+    parser_qualdist.set_defaults(func=run_subtool)
+
+
+
 
 
     ##########
@@ -371,7 +421,273 @@ def main():
     parser_kmerdiff.set_defaults(func=run_subtool)
 
 
+    ##########
+    # events stats
+    ##########
+    parser_events_stats = subparsers.add_parser('events_stats',
+                                        help='NEW FEATURE -- get read stats of events.')
+
+    parser_events_stats.add_argument('files', metavar='FILES', nargs='+',
+                             help='The input FAST5 files.')
+
+    parser_events_stats.add_argument('-f5', '--fast5type',
+                              dest='f5type',
+                              metavar='STRING',
+                              choices=['minknow', 'metrichor'],
+                              default='minknow',
+                              help='''Specify the type of fast5 file - minknow output, or metrichor base-called output.
+                                        choices = minknow, metrichor
+                                        The events have different hdf5 locations based on type.
+                                        Default: minknow
+                                        Minknow columns: start, length, mean, variance
+                                        Metrichor columns: mean, std dev, start, length''')
+    parser_events_stats.add_argument('--saveas',
+                             dest='saveas',
+                             metavar='STRING',
+                             help='''Save to file. e.g. --saveas "filename.extension" where extension can be only pdf and jpg for now.''',
+                             default=None)
+
     
+    parser_events_stats.set_defaults(func=run_subtool)
+
+
+
+    ##########
+    # get_events
+    ##########
+    parser_get_events = subparsers.add_parser('get_events',
+                                        help='NEW FEATURE -- get read stats of events.')
+    parser_get_events.add_argument('-i', '--input',
+                                   required=True,
+                                   type=str,
+                                   help='''Provide path to fast5 file.''')
+    
+    parser_get_events.add_argument('-f5', '--fast5type',
+                              dest='f5type',
+                              metavar='STRING',
+                              choices=['minknow', 'metrichor'],
+                              default='minknow',
+                              help='''Specify the type of fast5 file - minknow output, or metrichor base-called output.
+                                        choices = minknow, metrichor
+                                        The events have different hdf5 locations based on type.
+                                        Default: minknow
+                                        Minknow columns: start, length, mean, variance
+                                        Metrichor columns: mean, std dev, start, length''')
+                                   
+    
+    parser_get_events.add_argument('-out', '--outputformat',
+                             dest='out_fmt',
+                             type=str,
+                             help='''Return events in column structure of minknow or metrichor (defined in fast5type description).
+                                    Default is output format of f5 type chosen.''',
+                             default=None)
+    parser_get_events.add_argument('--saveas',
+                             dest='saveas',
+                             metavar='STRING',
+                             help='''Save to file. e.g. --saveas "filename.extension" ''',
+                             default=None)
+
+    
+    parser_get_events.set_defaults(func=run_subtool)
+
+
+     ##########
+    # get_model
+    ##########
+    parser_get_model = subparsers.add_parser('get_model',
+                                        help='NEW FEATURE -- get read stats of events.')
+
+    parser_get_model.add_argument('-i', '--input',
+                                   required=True,
+                                   type=str,
+                                   help='''Provide path to fast5 file. Has to be metrichor output f5 file.''')
+
+    parser_get_model.add_argument('--saveas',
+                             dest='saveas',
+                             metavar='STRING',
+                             help='''Save to file. e.g. --saveas "filename.extension" ''',
+                             default=None)
+
+    
+    parser_get_model.set_defaults(func=run_subtool)
+
+                                   
+    
+
+     ##########
+    # get_metadata
+    ##########
+    parser_get_metadata = subparsers.add_parser('get_metadata',
+                                        help='NEW FEATURE -- get read stats of events.')
+
+    parser_get_metadata.add_argument('-i', '--input',
+                                   required=True,
+                                   type=str,
+                                   help='''Provide path to fast5 file.''')
+    
+    parser_get_metadata.add_argument('-f5', '--fast5type', 
+                              dest='f5type',
+                              metavar='STRING',
+                              choices=['minknow', 'metrichor'],
+                              default='minknow',
+                              help='''Specify the type of fast5 file - minknow output, or metrichor base-called output.
+                                        choices = minknow, metrichor
+                                        The events have different hdf5 locations based on type.
+                                        Default: minknow
+                                        Minknow columns: start, length, mean, variance
+                                        Metrichor columns: mean, std dev, start, length''')  
+##    parser_get_metadata.add_argument('-out', '--outputformat',
+##                             dest='out_fmt',
+##                             type=str,
+##                             help='''Return events in column structure of minknow or metrichor (defined in fast5type description).
+##                                    Default is output format of f5 type chosen.''',
+##                             default=None)
+    parser_get_metadata.add_argument('--saveas',
+                             dest='saveas',
+                             metavar='STRING',
+                             help='''Save to file. e.g. --saveas "filename.extension" ''',
+                             default=None)
+
+    
+    parser_get_metadata.set_defaults(func=run_subtool)
+
+
+
+
+
+    ##########
+    # winner -- make poretools winner better for me.
+    ##########
+    parser_winner = subparsers.add_parser('winner',
+                                        help='Get the longest read from a set of FAST5 files')
+    parser_winner.add_argument('files', metavar='FILES', nargs='+',
+                               help='The input FAST5 files.')
+    parser_winner.add_argument('--type',
+                              dest='type',
+                              metavar='STRING',
+                              choices=['all', 'fwd', 'rev', '2D', 'fwd,rev', 'each'],
+                              default='all',
+                              help='''Which type of FASTA entries should be reported? Def.=all.
+                                    Choices: 'all', 'fwd', 'rev', '2D', 'fwd,rev', 'each'.
+                                    'each' will give longest for each 2D, fwd, rev.''')
+    parser_winner.add_argument('--details',
+                               action="store_true",
+                              default=False,
+                              help='If set, it will only print details: readname, length')
+    parser_winner.set_defaults(func=run_subtool)
+
+
+    ##########
+    # pct 2D
+    ##########
+    parser_pct2d = subparsers.add_parser('pct2d',
+                                        help='Get the proportion of reads that have a 2D read')
+    parser_pct2d.add_argument('files', metavar='FILES', nargs='+',
+                               help='The input FAST5 files.')
+    parser_pct2d.set_defaults(func=run_subtool)
+
+    ##########
+    # find uncalled (not basecalled) files
+    ##########
+    parser_uncalled = subparsers.add_parser('uncalled',
+                                        help='Find Fast5 files that were not base-called.')
+    parser_uncalled.add_argument('files', metavar='FILES', nargs='+',
+                               help='The input FAST5 files.')
+    parser_uncalled.add_argument('--outprefix', "-o",
+                               type=str, required=True,
+                              help='Uses this as basename for the following output files: (1) list of files not basecalled because template events not found, (2) list of files not basecalled because too few events found, (3) list of files not basecalled because too many events found. (4) event stats on each.')
+    parser_uncalled.add_argument('--move', "-m",
+                               action='store_true', default=False,
+                              help='''If specified, will move each non-basecalled file type to an approp labeled dir
+                                        inside same dir that has the dir reads with reads in it (e.g. downloads --> pass,
+                                        downloads --> fail, downloads --> "notemplate", etc).
+                                        Still writes out stats file.''')
+    parser_uncalled.set_defaults(func=run_subtool)
+
+
+    ##########
+    # get num events
+    ##########
+    parser_numevents = subparsers.add_parser('numevents',
+                                        help='Print 2 column list of file and number of input events in file.')
+    parser_numevents.add_argument('files', metavar='FILES', nargs='+',
+                               help='The input FAST5 files.')
+    parser_numevents.set_defaults(func=run_subtool)
+
+
+    ##########
+    # alignment
+    ##########
+    parser_align = subparsers.add_parser('align',
+                                        help='NEW FEATURE -- NOT YET STABLE/FINISHED. Performs alignments -- returns alignments, stats, plots')
+    align_subparsers = parser_align.add_subparsers(title='[align-commands]', dest='align_command', parser_class=ArgumentParserWithDefaults)
+    parser_align_fitting = align_subparsers.add_parser('fitting', help="fitting of 1 DNA seq to another")
+    parser_align_blasr = align_subparsers.add_parser('blasr', help="BLASR")
+    parser_align_blastn = align_subparsers.add_parser('blastn', help="BLASTN")
+    parser_align_last = align_subparsers.add_parser('last', help="LAST")
+    ## BLASR
+    parser_align_blasr.add_argument("--plot")
+    parser_align_blasr.add_argument("--blasr_file", type=str,default=None)
+##    parser_align_filetype = parser_align.add_mutually_exclusive_group(required=True)
+##    parser_align_filetype.add_argument('-fa', '--fasta',
+##                              dest='fasta',
+##                              default=None,
+##                              type=str,
+##                              help=('''Specify "--fasta file.fa" for analyzing a fasta file.'''))
+##    parser_align_filetype.add_argument('-fq', '--fastq',
+##                              dest='fastq',
+##                              default=None,
+##                              type=str,
+##                              help=('''Specify "--fasta file.fq" for analyzing a fastq file.'''))
+    parser_align.add_argument('--sequence',
+                             dest='sequence',
+                             type=str,
+                             help='''Provide a sequence < min read length. Default is the KanRR fragment: CGTACGCTGCAGGTCG''',
+                             default='CGTACGCTGCAGGTCG') ##shortest version of KanR fragment that maximized scores on some pilot reads
+    parser_align.add_argument('-m', '--multiple-sequences',
+                             dest='multiple_sequences',
+                             type=str, default=None,
+                             help='''Provide a path to a file with 1 sequence per line.
+                                    For each read in the fastx file, it will report the fitting alignment for the
+                                    sequence in this file with the best fitting aln.
+                                    Each time it encounters a score that ties the current max score, it exchanges the older fiting aln
+                                    info for the new fitting aln info with a 50%% probability.
+                                    This way there is a random assignment of the best barcode.
+                                    Use --all-scores instead to get an output with all max scores and barcodes returned.''')
+    parser_align.add_argument('-w', '--with-read-names',
+                             dest='with_read_names', action="store_true",
+                             default=False,
+                             help='''If set, will print "readname, startPosInRead, fitAlnScore, fitAlnScore/queryLen";
+                                else just "startPosInRead,fitAlnScore, fitAlnScore/queryLen".
+                                Start position is in pythonese (0-based).''')
+    parser_align.add_argument('-e', '--with-edit-distances',
+                             dest='with_edit_distances', action="store_true",
+                             default=False,
+                             help='''If set, edit dist will be incl in output''')
+    parser_align.add_argument('-a', '--with-aln-seqs',
+                             dest='with_aln_seqs', action="store_true",
+                             default=False,
+                             help='''If set, the aligned versions of sequences 1 (read) and 2 (provided) will be printed.''')
+    parser_align.add_argument('-r', '--random-sequence',
+                             dest='random_sequence', type=int,
+                             default=False,
+                             help='''Provide integer for random sequence length. This option overrides --sequence.''')
+    parser_align_seqtransform = parser_align.add_mutually_exclusive_group()
+    parser_align_seqtransform.add_argument("-c", "--complement", action="store_true", default=False,
+                                                 help=''' Use complement of provided sequence -- right now only works on single seq.
+                                                            e.g. AACC -> TTGG''')
+    parser_align_seqtransform.add_argument("-rc", "--reverse_complement", action="store_true", default=False,
+                                                 help=''' Use reverse complement of provided sequence -- right now only works on single seq.
+                                                            e.g. AACC -> GGTT''')
+    parser_align_seqtransform.add_argument("-rs", "--reverse_sequence", action="store_true", default=False,
+                                                 help=''' Use reverse sequence of provided sequence -- right now only works on single seq.
+                                                            e.g. AACC -> CCAA''')
+
+    parser_align.set_defaults(func=run_subtool)
+
+
+                                     
+
 
     #######################################################
     # parse the args and call the selected function

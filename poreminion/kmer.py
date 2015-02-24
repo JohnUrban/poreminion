@@ -11,6 +11,7 @@ def kmercount_in_string(string, kmerdict, k):
     ''' kmerdict is a defaultdict(int)
         It can take both empty and non-empty kmerdicts
         returns update of the input kmerdict given the input string and k'''
+    string = string.upper()
     for i in range(len(string)-k+1):
         kmerdict[string[i:i+k]] += 1
     return kmerdict

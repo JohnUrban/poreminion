@@ -1,0 +1,20 @@
+0.2.0
+More subtools added such as:
+qualdist,winner,pct2d,uncalled
+-- winner is from poretools, but I enabled a type called "each" to give winners for each read type and an option called --details to only give lengths, not sequence.
+-- pct2d goes through all reads in a dir and returns % that have 2D sequences
+-- uncalled goes through a dir, finds files that are not base-called and either reports them or moves them to a different dir
+Warning: I only work on poreminion every once in a while and some tools are un-finished and/or broken.
+Current tools I know to work are:
+	- data_conc
+	- qualpos
+	- qualdist
+	- kmer
+	- kmerplot 
+	- kmerdiff
+	- winner
+	- pct2d
+	- uncalled
+	- numevents
+The 'align' subtool is something I tooled with, which was just going to be a wrapper over various aligners. I believe it is not in working order.
+Others such as events_stats, get_events, get_model, get_metadata are also un-finished. I have similar functions in another suite that I will make available soon.

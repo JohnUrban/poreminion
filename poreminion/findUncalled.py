@@ -7,9 +7,10 @@ from subprocess import call
 import os
 
 def update_dict(d, numevents):
+    print numevents, d["max"], d["min"]
     if numevents < d["min"]:
         d["min"] = numevents
-    elif numevents > d["max"]:
+    if numevents > d["max"]:
         d["max"] = numevents
     d["sum"] += numevents
     d["num"] += 1

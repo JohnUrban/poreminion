@@ -24,16 +24,17 @@ def print_dict(d, msg):
 
 def write_out(filename, lines):
     out = open(filename,'w')
-    out.writelines(("\n").join(lines))
+    out.writelines(("\n").join(lines)+"\n")
     out.close()
 
-def write_stats(filename, notemp, toofewevents, toomanyevents):
+def write_stats(filename, notemp, toofewevents, toomanyevents, ioerror):
     out = open(filename,'w')
     out.write(("\n").join(print_dict(notemp, "No template data found.")) +"\n\n")
     out.write(("\n").join(print_dict(toofewevents, "Number of events is less than the allowed mimimum.")) +"\n\n")
     out.write(("\n").join(print_dict(toomanyevents, "Number of events is more than the allowed maximum.")) +"\n\n")
+    out.write(("\n").join(["IOerror", "numfiles:"+str(len(ioerror))]) +"\n\n")
     out.write("All too-big-to-base-call sizes:\n")
-    out.write(("\n").join([str(e) for e in sorted(toomanyevents["sizes"])]))
+    out.write(("\n").join([str(e) for e in sorted(toomanyevents["sizes"])])+"\n")
     out.close()
 
 
@@ -64,9 +65,13 @@ def run(parser, args):
     for fast5 in Fast5FileSet(args.files):
         total += 1
         fas = fast5.get_fastas_dict()
+        try:
+            f=h5py.File(fast5.filename)
+        except IOError:
+            nocall["IOError"].append(fast5.filename)
+            continue
         if len(fas) == 0:
             numNotCalled += 1
-            f=h5py.File(fast5.filename)
             log=f["/Analyses/Basecall_2D_000/Log"].value
             readnum = [e for e in f["/Analyses/EventDetection_000/Reads/"]][0]
             numevents = f["/Analyses/EventDetection_000/Reads/"+readnum+"/Events"].shape[0]
@@ -81,7 +86,7 @@ def run(parser, args):
                 nocall["Number of events is more than the allowed maximum."].append(fast5.filename)
                 toomanevents = update_dict(toomanyevents, numevents)
                 toomanyevents["sizes"].append(numevents)
-            f.close()
+        f.close()
         fast5.close()
 
     if args.move:
@@ -99,9 +104,13 @@ def run(parser, args):
             move_files(nocall["Number of events is less than the allowed mimimum."], os.path.join(base, "toofewevents"))
         if nocall["Number of events is more than the allowed maximum."]:
             move_files(nocall["Number of events is more than the allowed maximum."], os.path.join(base, "toomanyevents"))
+        if nocall["IOError"]:
+            move_files(nocall["IOError"], os.path.join(base, "IOError"))
+            
 
     write_out(args.outprefix+".notemplate.txt", nocall["No template data found."])
     write_out(args.outprefix+".toofew.txt", nocall["Number of events is less than the allowed mimimum."])
     write_out(args.outprefix+".toomany.txt", nocall["Number of events is more than the allowed maximum."])
-    write_stats(args.outprefix+".stats.txt", notemp, toofewevents, toomanyevents)
+    write_out(args.outprefix+".IOerror.txt", nocall["IOError"])
+    write_stats(args.outprefix+".stats.txt", notemp, toofewevents, toomanyevents, nocall["IOerror"])
         

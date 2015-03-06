@@ -39,8 +39,14 @@ def run_subtool(parser, args):
         import qualdist as submodule
     elif args.command == 'pct2d':
         import pct2D as submodule
+    elif args.command == 'has2d':
+        import has2D as submodule
+    elif args.command == 'fragstats':
+        import fragstats as submodule
     elif args.command == 'uncalled':
         import findUncalled as submodule
+    elif args.command == 'timetest':
+        import findTimeErrors as submodule
     elif args.command == 'numevents':
         import numevents as submodule
 
@@ -586,6 +592,43 @@ def main():
                                help='The input FAST5 files.')
     parser_pct2d.set_defaults(func=run_subtool)
 
+
+    ##########
+    # has 2D
+    ##########
+    parser_has2d = subparsers.add_parser('has2d',
+                                        help='Prints 2 columns: filename, has2D =  True/False')
+    parser_has2d.add_argument('files', metavar='FILES', nargs='+',
+                               help='The input FAST5 files.')
+    parser_has2d_filter = parser_has2d.add_mutually_exclusive_group()
+    parser_has2d_filter.add_argument('--only2d', "-2",
+                               action='store_true', default=False,
+                              help='''If specified, will only print out files that have 2D -- no True/False column.''')
+    parser_has2d_filter.add_argument('--no2d', "-0",
+                               action='store_true', default=False,
+                              help='''If specified, will only print out files that do not have 2D -- no True/False column.''')
+ 
+    parser_has2d.set_defaults(func=run_subtool)
+
+
+    ##########
+    # fragstats
+    ##########
+    parser_fragstats = subparsers.add_parser('fragstats',
+                                        help='''Returns tab-delimited table with columns:
+                                    1=readname, 2=estimated fragment size, 3=number input events, 4=if complement detected, 5=if 2D detected,
+                                    6=num template events, 7=num complement events, 8=length of 2D sequence, 9=length of template sequence,
+                                    10=length of complement sequence, 11=mean qscore of 2D sequence, 12=mean qscore of template sequence,
+                                    13=mean qscore of complement.
+                                    Estimates fragment size in the following way.
+                                    If has 2D, this is length of 2D read.
+                                    If template only, it is the length of template.
+                                    If template and complement, but no 2D, it is length of the longer read between template and complement.
+                                                    ''')
+    parser_fragstats.add_argument('files', metavar='FILES', nargs='+',
+                               help='The input FAST5 files.')
+    parser_fragstats.set_defaults(func=run_subtool)
+
     ##########
     # find uncalled (not basecalled) files
     ##########
@@ -604,6 +647,27 @@ def main():
                                         Still writes out stats file.''')
     parser_uncalled.set_defaults(func=run_subtool)
 
+
+    ##########
+    # findTimeErrors
+    ##########
+    parser_timetest = subparsers.add_parser('timetest',
+                                        help='Find Fast5 files that have event times that are earlier than event times before it suggesting malfunction/erroneous read.')
+    parser_timetest.add_argument('files', metavar='FILES', nargs='+',
+                               help='The input FAST5 files.')
+    parser_timetest.add_argument('--outprefix', "-o",
+                               type=str, default=False,
+                              help='Uses this as basename for file containing list of files with time errors.')
+    parser_timetest.add_argument('--move', "-m",
+                               action='store_true', default=False,
+                              help='''If specified, will move files with time error dir labeled time_errors
+                                        inside same dir that has the dir with reads in it (e.g. downloads --> pass,
+                                        downloads --> fail, downloads --> "time_errors", etc).
+                                        Still writes out list file above.''')
+    parser_timetest.add_argument('--verbose', "-v",
+                               action='store_true', default=False,
+                              help='''Will print to stderr info about how far along it is in process.''')
+    parser_timetest.set_defaults(func=run_subtool)
 
     ##########
     # get num events

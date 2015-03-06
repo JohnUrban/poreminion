@@ -53,7 +53,15 @@ def move_files(filelist, dirname):
         newf = os.path.join(dirname, f.split("/")[-1])
         runfail("mv {} {}".format(f, newf))
             
-    
+def get_base_name(filename):
+##    base = args.files[0].split("/")
+    base = filename.split("/")
+    if base[-1] == "":
+        base = base[:-2]
+    else:
+        base = base[:-1]
+    base = ("/").join(base)
+    return base
 
 def run(parser, args):
     nocall = defaultdict(list)
@@ -91,13 +99,14 @@ def run(parser, args):
 
     if args.move:
 ##        print args.files[0]
-        base = args.files[0].split("/")
-        if base[-1] == "":
-            base = base[:-2]
-        else:
-            base = base[:-1]
-        base = ("/").join(base)
+##        base = args.files[0].split("/")
+##        if base[-1] == "":
+##            base = base[:-2]
+##        else:
+##            base = base[:-1]
+##        base = ("/").join(base)
 ##        print base
+        base = get_base_name(args.files[0])
         if nocall["No template data found."]:
             move_files(nocall["No template data found."], os.path.join(base, "notemplate"))
         if nocall["Number of events is less than the allowed mimimum."]:

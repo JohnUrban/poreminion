@@ -1,7 +1,7 @@
 import sys
 from poretools.Fast5File import *
-from glob import glob
-import h5py
+##from glob import glob
+##import h5py
 from collections import defaultdict
 from subprocess import call
 import os
@@ -49,7 +49,6 @@ def move_files(filelist, dirname):
 ##        print "Making dir...."
         runfail("mkdir "+dirname)
     for f in filelist:
-##        print f
         newf = os.path.join(dirname, f.split("/")[-1])
         runfail("mv {} {}".format(f, newf))
             
@@ -73,17 +72,16 @@ def run(parser, args):
     for fast5 in Fast5FileSet(args.files):
         total += 1
         fas = fast5.get_fastas_dict()
-        try:
-            f=h5py.File(fast5.filename)
-        except IOError:
-            nocall["IOError"].append(fast5.filename)
-            continue
+##        try:
+##            f=h5py.File(fast5.filename) ## change code to access connection by fast5.hdf5file
+##        except IOError:
+##            nocall["IOError"].append(fast5.filename)
+##            continue
         if len(fas) == 0:
             numNotCalled += 1
-            log=f["/Analyses/Basecall_2D_000/Log"].value
-            readnum = [e for e in f["/Analyses/EventDetection_000/Reads/"]][0]
-            numevents = f["/Analyses/EventDetection_000/Reads/"+readnum+"/Events"].shape[0]
-##            print fast5.filename, str(log.split("\n"))
+            log=fast5.hdf5file["/Analyses/Basecall_2D_000/Log"].value
+            readnum = [e for e in fast5.hdf5file["/Analyses/EventDetection_000/Reads/"]][0]
+            numevents = fast5.hdf5file["/Analyses/EventDetection_000/Reads/"+readnum+"/Events"].shape[0]
             if "No template data found." in log:
                 nocall["No template data found."].append(fast5.filename)
                 notemp = update_dict(notemp, numevents)
@@ -94,18 +92,10 @@ def run(parser, args):
                 nocall["Number of events is more than the allowed maximum."].append(fast5.filename)
                 toomanevents = update_dict(toomanyevents, numevents)
                 toomanyevents["sizes"].append(numevents)
-        f.close()
+##        f.close()
         fast5.close()
 
     if args.move:
-##        print args.files[0]
-##        base = args.files[0].split("/")
-##        if base[-1] == "":
-##            base = base[:-2]
-##        else:
-##            base = base[:-1]
-##        base = ("/").join(base)
-##        print base
         base = get_base_name(args.files[0])
         if nocall["No template data found."]:
             move_files(nocall["No template data found."], os.path.join(base, "notemplate"))
@@ -113,13 +103,13 @@ def run(parser, args):
             move_files(nocall["Number of events is less than the allowed mimimum."], os.path.join(base, "toofewevents"))
         if nocall["Number of events is more than the allowed maximum."]:
             move_files(nocall["Number of events is more than the allowed maximum."], os.path.join(base, "toomanyevents"))
-        if nocall["IOError"]:
-            move_files(nocall["IOError"], os.path.join(base, "IOError"))
+##        if nocall["IOError"]:
+##            move_files(nocall["IOError"], os.path.join(base, "IOError"))
             
 
     write_out(args.outprefix+".notemplate.txt", nocall["No template data found."])
     write_out(args.outprefix+".toofew.txt", nocall["Number of events is less than the allowed mimimum."])
     write_out(args.outprefix+".toomany.txt", nocall["Number of events is more than the allowed maximum."])
-    write_out(args.outprefix+".IOerror.txt", nocall["IOError"])
+##    write_out(args.outprefix+".IOerror.txt", nocall["IOError"])
     write_stats(args.outprefix+".stats.txt", notemp, toofewevents, toomanyevents, nocall["IOerror"])
         

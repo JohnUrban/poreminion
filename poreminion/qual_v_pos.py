@@ -1,6 +1,9 @@
 from poretools.Fast5File import *
 from collections import defaultdict
 import numpy as np
+import matplotlib
+## may need following line for remote jobs (e.g. submitting batch scripts)
+## matplotlib.use('Agg') # Must be before importing matplotlib.pyplot or pylab!
 import matplotlib.pyplot as plt
 
 #logging

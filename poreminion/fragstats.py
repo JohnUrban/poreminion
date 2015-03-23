@@ -49,7 +49,7 @@ def get_num_events(f5connection, eventstype):
 
 def get_frag_stats(fast5):
         # name, numinputevents, fragsize-est, 2dreadlen, templen, complen, meanqual, 
-        f=h5py.File(fast5.filename)
+        f=fast5.hdf5file
         name = fast5.filename.split("/")[-1]
         numevents = get_num_events(f, "input")
         if fast5.has_2D():
@@ -81,7 +81,6 @@ def get_frag_stats(fast5):
             meanscorecomp = "-"
             if not fast5.has_2D():
                 fragsize = seqlentemp
-        f.close()
         return [name, fragsize, numevents, hascomp, has2d, numtempevents, numcompevents, seqlen2d, seqlentemp, seqlencomp, meanscore2d, meanscoretemp, meanscorecomp]
         
 

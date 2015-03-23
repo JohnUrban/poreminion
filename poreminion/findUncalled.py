@@ -32,7 +32,7 @@ def write_stats(filename, notemp, toofewevents, toomanyevents, ioerror):
     out.write(("\n").join(print_dict(notemp, "No template data found.")) +"\n\n")
     out.write(("\n").join(print_dict(toofewevents, "Number of events is less than the allowed mimimum.")) +"\n\n")
     out.write(("\n").join(print_dict(toomanyevents, "Number of events is more than the allowed maximum.")) +"\n\n")
-    out.write(("\n").join(["IOerror", "numfiles:"+str(len(ioerror))]) +"\n\n")
+    out.write(("\n").join(["OtherError", "numfiles:"+str(len(ioerror))]) +"\n\n")
     out.write("All too-big-to-base-call sizes:\n")
     out.write(("\n").join([str(e) for e in sorted(toomanyevents["sizes"])])+"\n")
     out.close()
@@ -72,11 +72,12 @@ def run(parser, args):
     for fast5 in Fast5FileSet(args.files):
         total += 1
         fas = fast5.get_fastas_dict()
-##        try:
+        try:
 ##            f=h5py.File(fast5.filename) ## change code to access connection by fast5.hdf5file
-##        except IOError:
-##            nocall["IOError"].append(fast5.filename)
-##            continue
+            fast5.hdf5file
+        except:
+            nocall["OtherError"].append(fast5.filename)
+            continue
         if len(fas) == 0:
             numNotCalled += 1
             log=fast5.hdf5file["/Analyses/Basecall_2D_000/Log"].value
@@ -103,13 +104,13 @@ def run(parser, args):
             move_files(nocall["Number of events is less than the allowed mimimum."], os.path.join(base, "toofewevents"))
         if nocall["Number of events is more than the allowed maximum."]:
             move_files(nocall["Number of events is more than the allowed maximum."], os.path.join(base, "toomanyevents"))
-##        if nocall["IOError"]:
-##            move_files(nocall["IOError"], os.path.join(base, "IOError"))
+        if nocall["OtherError"]:
+            move_files(nocall["OtherError"], os.path.join(base, "OtherError"))
             
 
     write_out(args.outprefix+".notemplate.txt", nocall["No template data found."])
     write_out(args.outprefix+".toofew.txt", nocall["Number of events is less than the allowed mimimum."])
     write_out(args.outprefix+".toomany.txt", nocall["Number of events is more than the allowed maximum."])
-##    write_out(args.outprefix+".IOerror.txt", nocall["IOError"])
-    write_stats(args.outprefix+".stats.txt", notemp, toofewevents, toomanyevents, nocall["IOerror"])
+    write_out(args.outprefix+".OtherError.txt", nocall["OtherError"])
+    write_stats(args.outprefix+".stats.txt", notemp, toofewevents, toomanyevents, nocall["OtherError"])
         

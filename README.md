@@ -2,42 +2,65 @@ poreminion
 ==========
 
 Additional tools for analyzing Oxford Nanopore minION data (built on top of poretools) by John Urban.
-Current tools I know to work are:
-	- data_conc
-	- qualpos
-	- qualdist
-	- kmer
-	- kmerplot 
-	- kmerdiff
-	- winner
-	- pct2d
-	- uncalled
-	- numevents
-The 'align' subtool is something I tooled with, which was just going to be a wrapper over various aligners. I believe it is not in working order.
-Others such as events_stats, get_events, get_model, get_metadata are also un-finished. I have similar functions in another suite that I will make available soon.
 
-- data concentration (DC) plots:      
--         poreminion data_conc
-
-- cumulative data concentration plots:    
--         poreminion data_conc --cumulative
-
-- DC plots as % of data:
--         poreminion data_conc --percent  
--         poreminion data_conc --cumulative --percent
-
-- quality vs. position boxplots:
--         poreminion qualpos
-
--   of only 2D reads: 
--         poreminion qualpos --type 2D
-
--   of only template reads: 
--         poreminion qualpos --type fwd
-
--   of only template reads: 
--         poreminion qualpos --type rev
-
+Tools:
+    uncalled            Find Fast5 files that were not base-called.
+    timetest            Find Fast5 files that have event times that are earlier than event times before it suggesting malfunction/erroneous read.
+    fragstats           Run this on set of base-called fast5 files.
+                        Returns tab-delimited table with columns:
+                        1 = readname,
+                        2 = estimated molecule/fragment size,
+                        3 = number input events,
+                        4 = if complement detected,
+                        5 = if 2D detected,
+                        6 = num template events,
+                        7 = num complement events,
+                        8 = length of 2D sequence,
+                        9 = length of template sequence,
+                        10 = length of complement sequence,
+                        11 = mean qscore of 2D sequence,
+                        12 = mean qscore of template sequence,
+                        13 = mean qscore of complement,
+                        14 = ratio of number template events to number complement events,
+                        15 = "robust" 0 or 1 for whether temp, comp, and 2d sequence lengths are all within fragsize +/- 20percent. 
+                        
+                        If --extensive used:
+                        16 = starttime of all events,
+                        17 = endtime of all events,
+                        18 = slope of all events,
+                        19 = mean duration across all events,
+                        20 = median duration across all events,
+                        21 = sd of all event durations,
+                        22 = min event duration,
+                        23 = max event duration,
+                        24-29 = num temp events with 0,1,2,3,4,5 moves from base-caller,
+                        30-35 = num comp events with 0,1,2,3,4,5 moves from base caller.
+                        
+                        If --checktime used:
+                        Final column = 0 or 1 for no/yes there is a time error present.
+                        
+                        Estimates molecule/fragment size in the following way.
+                        If has 2D, molecule size is the length of 2D read.
+                        If template only, molecule size is the length of template read.
+                        If template and complement, but no 2D, molecule size is length of the longer read between template and complement.
+                        Molecule size allows calculation of total non-redundant data.
+                        This is the sum of unique molecule lengths rather than summing all read types from each molecule.
+                        From the molecule sizes, the "Molecule N50" can be computed using the nx subcommand on the fragstats file and specifying colum 2.
+                                                                            
+    nx                  Computes N50 or NX values on columns of a file or from comma-separated list.
+    pct2d               Get the proportion of reads that have a 2D read
+    has2d               Prints 2 columns: filename, has2D =  True/False
+    numevents           Print 2 column list of file and number of input events in file.
+    events              Look at events inside raw and basecalled fast5 files. 
+    dataconc            Plot sum of read lengths in each bin for a given set of bins for a set of FAST5 files.
+                        This is the type of plot seen in MinKNOW while sequencing.
+    qualpos             Get the qual score distribution over positions in reads
+    qualdist            Get the qual score composition of a set of FAST5 files
+    kmer                Count kmers in reads or reference.
+    kmerplot            Plot kmer counts in reads or reference.
+    kmerdiff            Get fold-enrichment values of kmers in reads vs reference.
+    winner              Get the longest read from a set of FAST5 files.
+                        Similar to poretools winner, only allows type=each and offers a details only option.
 
 Requirements
 ==========

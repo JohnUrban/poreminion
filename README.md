@@ -4,6 +4,7 @@ poreminion
 Additional tools for analyzing Oxford Nanopore minION data (built on top of poretools) by John Urban.
 
 Tools:
+
     uncalled            Find Fast5 files that were not base-called.
     timetest            Find Fast5 files that have event times that are earlier than event times before it suggesting malfunction/erroneous read.
     fragstats           Run this on set of base-called fast5 files.

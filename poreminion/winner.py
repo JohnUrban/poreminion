@@ -1,14 +1,14 @@
 from poretools import *
 import sys
 
-## Nov 4.
+## Nov 4, 2014
 ## TODO for pipeline Id want both the "details" and the "fa" files
 ## This would require a --saveas option -- and it will save both.
 ## Might also want it to save the fastas to their own files when --each
 
 #logging
 import logging
-logger = logging.getLogger('poretools')
+logger = logging.getLogger('poreminion')
 
 
 def run(parser, args):

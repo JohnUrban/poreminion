@@ -2,7 +2,6 @@ poreminion
 ==========
 
 Additional tools for analyzing Oxford Nanopore minION data (built on top of poretools) by John Urban.
-Warning: I only work on PoreMinion every once in a while and some tools are un-finished and/or broken.
 Current tools I know to work are:
 	- data_conc
 	- qualpos
@@ -59,6 +58,7 @@ pandas>=0.14.1
 
 matplotlib>=1.4.0
 
+edgeR (only for kmer 'differential expression' analysis)
 
 Note
 ======

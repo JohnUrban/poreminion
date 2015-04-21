@@ -4,7 +4,7 @@ import numpy as np
 import pandas
 import matplotlib
 ## may need following line for remote jobs (e.g. submitting batch scripts)
-## matplotlib.use('Agg') # Must be before importing matplotlib.pyplot or pylab!
+##matplotlib.use('Agg') # Must be before importing matplotlib.pyplot or pylab!
 import matplotlib.pyplot as plt
 ##from matplotlib.backends.backend_pdf import PdfPages
 
@@ -12,6 +12,38 @@ import matplotlib.pyplot as plt
 import logging
 logger = logging.getLogger('poreminion')
 logger.setLevel(logging.INFO)
+
+
+##TODO:
+## convert from R so it stays the same
+## OR use rpy2 to just use R functions....
+
+##def data_partition_stats(x, startfrom=0, goto=None, incrementby=100, presorted=False):
+##        ### startfrom is 0-based, goto is standard python-ese (go up to but not including)
+##        ### e.g. 0 to 100 includes 0...99
+##        if not presorted:
+##                x = sorted(x)
+##        xlen = len(x)
+##        if goto == None:
+##                goto = xlen
+##        breaks = [startfrom]
+##        mids = []
+##        heights = []
+##        accum_heights = []
+##        accum_height = 0
+##        counts = []
+##        accum_counts = []
+##        accum_count = 0
+##        xi = 0
+##        #burn off xi until reach startfrom
+##        while x[xi] < startfrom:
+##                xi += 1
+##        ## fill in partition stats as defined by startfrom, goto, and incrementby
+##        for i in range(startfrom+incrementby, goto, incrementby):
+##                breaks.append(i)
+##                mids.append(np.mean([i, i-incrementby]))
+                
+
 
 def plot_data_conc(sizes, args):
 	"""

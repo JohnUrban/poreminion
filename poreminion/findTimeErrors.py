@@ -1,6 +1,5 @@
 import sys
 from poretools.Fast5File import *
-from fragstats import get_frag_stats
 import h5py
 from findUncalled import runfail, write_out, move_files, get_base_name
 from subprocess import call
@@ -27,6 +26,17 @@ def has_time_error(f5connection, basecalled):
         t1 = t2
     return False
 
+def has_time_error_list(starttimes):
+    ''' times is a list of numbers
+        This is better when starttimes have already been extracted from f5 connection'''
+    t1 = starttimes[0]
+    for t2 in starttimes[1:]:
+        if t2 < t1:
+            return True
+        t1 = t2
+    return False
+
+    
 def is_basecalled(f5connection):
     try:
         f5connection['/Analyses/Basecall_2D_000']

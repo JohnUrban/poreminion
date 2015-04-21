@@ -1,3 +1,20 @@
+0.3.0
+More subtools added such as:
+- nx (example use: calculate n50 on file column)
+- events (example use: print events from a fast5)
+- has2D (example use: get True/False 2D info on each file in set of basecalled fast5 files in 2 column output)
+- timetest (example use: after filtering base-called files for those that weren't base-called, further filter for files with the known time error (rare and will soon be fixed).)
+
+Updated:
+- frastats --has an extensive option that gives much more info, but takes longer. Also has a timetest option.
+
+Some unfinished subtools removed (at least for now).
+
+What I know is upcoming in 0.3.1
+- update dataconc to be faster -- no need for pandas
+
+
+
 0.2.0
 More subtools added such as:
 qualdist,winner,pct2d,uncalled

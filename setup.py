@@ -27,6 +27,7 @@ setup(
         zip_safe = False,
         include_package_data=True,
         #scripts = ['poreminion/scripts/poreminion'],
+        scripts = ['poreminion/scripts/getAttributes.sh'],
         entry_points = {
             'console_scripts' : [
                  'poreminion = poreminion.poreminion_main:main', 

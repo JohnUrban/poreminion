@@ -8,7 +8,6 @@ Tools:
     uncalled            Find Fast5 files that were not base-called.
     timetest            Find Fast5 files that have event times that are earlier than event times before it suggesting malfunction/erroneous read.
     fragstats           Run this on set of base-called fast5 files.
-                        Returns tab-delimited table with columns:
                         1 = readname,
                         2 = estimated molecule/fragment size,
                         3 = number input events,
@@ -23,30 +22,30 @@ Tools:
                         12 = mean qscore of template sequence,
                         13 = mean qscore of complement,
                         14 = ratio of number template events to number complement events,
-			15 = channel number molecule traversed
-			16 = heat sink temperature while molecule traversed
-			17 = num called template events (after events pruned during base-calling)
-			18 = num called complement events (after events pruned during base-calling)
-			19 = num skips in template
-			20 = num skips in complement
-			21 = num stays in template
-			22 = num stays in complement
-			23 = strand score template
-			24 = strand score complement
-			25 = num stutters in template
-			26 = num stutters in complement                        
-
+                        15 = channel number molecule traversed
+                        16 = heat sink temperature while molecule traversed
+                        17 = num called template events (after events pruned during base-calling)
+                        18 = num called complement events (after events pruned during base-calling)
+                        19 = num skips in template
+                        20 = num skips in complement
+                        21 = num stays in template
+                        22 = num stays in complement
+                        23 = strand score template
+                        24 = strand score complement
+                        25 = num stutters in template
+                        26 = num stutters in complement
+                        
                         If --extensive used:
-                        16 = starttime of all events,
-                        17 = endtime of all events,
-                        18 = slope of all events,
-                        19 = mean duration across all events,
-                        20 = median duration across all events,
-                        21 = sd of all event durations,
-                        22 = min event duration,
-                        23 = max event duration,
-                        24-29 = num temp events with 0,1,2,3,4,5 moves from base-caller,
-                        30-35 = num comp events with 0,1,2,3,4,5 moves from base caller.
+                        27 = starttime,
+                        28 = endtime,
+                        29 = slope across all events,
+                        30 = mean duration across all events,
+                        31 = median duration across all events,
+                        32 = sd of all event durations,
+                        33 = min event duration,
+                        34 = max event duration,
+                        35-40 = num temp events with 0,1,2,3,4,5 moves from base-caller,
+                        41-46 = num comp events with 0,1,2,3,4,5 moves from base caller.
                         
                         If --checktime used:
                         Final column = 0 or 1 for no/yes there is a time error present.

@@ -23,8 +23,19 @@ Tools:
                         12 = mean qscore of template sequence,
                         13 = mean qscore of complement,
                         14 = ratio of number template events to number complement events,
-                        15 = "robust" 0 or 1 for whether temp, comp, and 2d sequence lengths are all within fragsize +/- 20percent. 
-                        
+			15 = channel number molecule traversed
+			16 = heat sink temperature while molecule traversed
+			17 = num called template events (after events pruned during base-calling)
+			18 = num called complement events (after events pruned during base-calling)
+			19 = num skips in template
+			20 = num skips in complement
+			21 = num stays in template
+			22 = num stays in complement
+			23 = strand score template
+			24 = strand score complement
+			25 = num stutters in template
+			26 = num stutters in complement                        
+
                         If --extensive used:
                         16 = starttime of all events,
                         17 = endtime of all events,

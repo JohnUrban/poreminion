@@ -1,5 +1,6 @@
 poreminion - 0.3.2
 ==========
+NOTE: I have disabled the parallel aspect of fragstats for now as it didnt end up working and will require some restructuring.
 
 Additional tools for analyzing Oxford Nanopore minION data (built on top of poretools) by John Urban.
 

@@ -332,11 +332,13 @@ def frag_fxn(fast5, args):
 
 
 def run(parser, args):
-    Parallel(n_jobs=args.parallel)(
-    delayed(frag_fxn)(fast5, args) for fast5 in Fast5FileSet(args.files))
-    
-##    for fast5 in Fast5FileSet(args.files):
-##        frag_fxn(fast5, args)
-##        fast5.close()
+    pass
+##    Parallel(n_jobs=args.parallel)(
+##    delayed(frag_fxn)(fast5, args) for fast5 in Fast5FileSet(args.files))
+
+    for fast5 in Fast5FileSet(args.files):
+        frag_fxn(fast5, args)
+        fast5.close()
+
 
 

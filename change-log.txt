@@ -1,3 +1,16 @@
+0.3.2
+Added:
+- requirement for joblib module, used in fragstats
+
+Updated:
+- fragstats now runs much faster with parallel capability
+	--parallel option. Default: 1.
+	--> anything >1 does not work on my macbook pro, but does work on our super computing cluster.
+	--> 1 works on both.
+- fragsummary
+	- performs more summarizing now (more to come)
+
+
 0.3.1
 Added:
 - fragsummary -- summarizes a fragstats table file -- lots of useful info. 0.3.2 will have even more info from fragstats summarized.

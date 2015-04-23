@@ -5,6 +5,7 @@ import numpy as np
 from findTimeErrors import has_time_error, has_time_error_list
 import pandas
 from nX import NX
+from joblib import Parallel, delayed ## parallelize 0.3.2
 #logging
 import logging
 logger = logging.getLogger('poreminion')
@@ -315,19 +316,27 @@ def make_fragstats_dataframe(fragstatsfile, extensive=False, timecheck=False):
 def plot_fragstats():
     pass
 
+
+def frag_fxn(fast5, args):
+    fragstats = get_frag_stats(fast5)
+    if args.extensive:
+        hascomp = has_complement(fast5.hdf5file)
+        if args.checktime:
+            fragstats += get_more_fragstats(fast5.hdf5file, hascomp = hascomp, check_time = True)
+        else:
+            fragstats += get_more_fragstats(fast5.hdf5file, hascomp = hascomp, check_time = False)
+    if not args.extensive and args.checktime:
+        input_events = store_input_events(fast5.hdf5file, basecalled)
+        fragstats += [int(has_time_error_list(input_events['start']))]
+    print ("\t").join([str(e) for e in fragstats])
+
+
 def run(parser, args):
-    for fast5 in Fast5FileSet(args.files):
-        fragstats = get_frag_stats(fast5)
-        if args.extensive:
-            hascomp = has_complement(fast5.hdf5file)
-            if args.checktime:
-                fragstats += get_more_fragstats(fast5.hdf5file, hascomp = hascomp, check_time = True)
-            else:
-                fragstats += get_more_fragstats(fast5.hdf5file, hascomp = hascomp, check_time = False)
-        if not args.extensive and args.checktime:
-            input_events = store_input_events(fast5.hdf5file, basecalled)
-            fragstats += [int(has_time_error_list(input_events['start']))]
-        print ("\t").join([str(e) for e in fragstats])
-        fast5.close()
+    Parallel(n_jobs=args.parallel)(
+    delayed(frag_fxn)(fast5, args) for fast5 in Fast5FileSet(args.files))
+    
+##    for fast5 in Fast5FileSet(args.files):
+##        frag_fxn(fast5, args)
+##        fast5.close()
 
 

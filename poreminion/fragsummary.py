@@ -1,5 +1,7 @@
 from fragstats import *
 
+## TODO 4/23/15-- break this hard-coded monster up into functions
+## there is a lot of repeated pieces of code - tighten it up, shrink it
 
 def summarize_fragstats(fragstats_df, extensive=False, timecheck=False):
     ## fragstats_df is dataframe from make_fragstats_dataframe()
@@ -459,34 +461,181 @@ def summarize_fragstats(fragstats_df, extensive=False, timecheck=False):
     print
 
     
-##    if extensive:
-##        #slope
-##        mean_slope =
-##        median_slope =
-##        sd_slope =
-##        min_slope =
-##        max_slope =
-##        # t moves
-##        mean_pct_tevents_move_0 =
-##        mean_pct_tevents_move_1 =
-##        mean_pct_tevents_move_2 =
-##        mean_pct_tevents_move_3 =
-##        mean_pct_tevents_move_4 =
-##        mean_pct_tevents_move_5 =
-##        # c moves
-##        mean_pct_cevents_move_0 =
-##        mean_pct_cevents_move_1 =
-##        mean_pct_cevents_move_2 =
-##        mean_pct_cevents_move_3 =
-##        mean_pct_cevents_move_4 =
-##        mean_pct_cevents_move_5 =
+    if extensive:
+        #slope
+        mean_slope = fragstats_df['slope'].mean()
+        median_slope = fragstats_df['slope'].median()
+        sd_slope = fragstats_df['slope'].std()
+        min_slope_idx = fragstats_df['slope'].idxmin()
+        max_slope_idx = fragstats_df['slope'].idxmax()
+        print "median_slope", median_slope
+        print "mean_slope", mean_slope
+        print "sd_slope", sd_slope
+        print
+        print ("\t").join(["#metric", "slope_value", "numevents_from_molecule", "seq_len_2d", "seq_len_template", "seq_len_complement", "Q_2d", "Q_template", "Q_complement", "name"])
+        print "min_slope", fragstats_df['slope'][min_slope_idx], fragstats_df['numevents'][min_slope_idx], nonetodash(fragstats_df['seqlen2d'][min_slope_idx]), nonetodash(fragstats_df['seqlentemp'][min_slope_idx]), nonetodash(fragstats_df['seqlencomp'][min_slope_idx]),  nonetodash(fragstats_df['meanscore2d'][min_slope_idx]), nonetodash(fragstats_df['meanscoretemp'][min_slope_idx]), nonetodash(fragstats_df['meanscorecomp'][min_slope_idx]), fragstats_df['name'][min_slope_idx]
+        print "max_slope", fragstats_df['slope'][max_slope_idx], fragstats_df['numevents'][max_slope_idx], nonetodash(fragstats_df['seqlen2d'][max_slope_idx]), nonetodash(fragstats_df['seqlentemp'][max_slope_idx]), nonetodash(fragstats_df['seqlencomp'][max_slope_idx]), nonetodash(fragstats_df['meanscore2d'][max_slope_idx]), nonetodash(fragstats_df['meanscoretemp'][max_slope_idx]), nonetodash(fragstats_df['meanscorecomp'][max_slope_idx]), fragstats_df['name'][max_slope_idx]
+        print
+        
+        # t moves -- NOTE: sum(all moves) = num_called_events
+        # thus, 100*moves_x/num_called_events is percent of given move x
+        med_pct_tevents_move_0 = 100.0*(fragstats_df['tmove_0']/fragstats_df['numcalledeventstemp']).median()
+        mean_pct_tevents_move_0 = 100.0*(fragstats_df['tmove_0']/fragstats_df['numcalledeventstemp']).mean()
+        std_pct_tevents_move_0 = 100.0*(fragstats_df['tmove_0']/fragstats_df['numcalledeventstemp']).std()
+        minidx_pct_tevents_move_0 = (fragstats_df['tmove_0']/fragstats_df['numcalledeventstemp']).idxmin()
+        maxidx_pct_tevents_move_0 = (fragstats_df['tmove_0']/fragstats_df['numcalledeventstemp']).idxmax()
+        min_pct_tevents_move_0 = 100.0*(fragstats_df['tmove_0']/fragstats_df['numcalledeventstemp']).min()
+        max_pct_tevents_move_0 = 100.0*(fragstats_df['tmove_0']/fragstats_df['numcalledeventstemp']).max()
+
+        med_pct_tevents_move_1 = 100.0*(fragstats_df['tmove_1']/fragstats_df['numcalledeventstemp']).median()
+        mean_pct_tevents_move_1 = 100.0*(fragstats_df['tmove_1']/fragstats_df['numcalledeventstemp']).mean()
+        std_pct_tevents_move_1 = 100.0*(fragstats_df['tmove_1']/fragstats_df['numcalledeventstemp']).std()
+        minidx_pct_tevents_move_1 = (fragstats_df['tmove_1']/fragstats_df['numcalledeventstemp']).idxmin()
+        maxidx_pct_tevents_move_1 = (fragstats_df['tmove_1']/fragstats_df['numcalledeventstemp']).idxmax()
+        min_pct_tevents_move_1 = 100.0*(fragstats_df['tmove_1']/fragstats_df['numcalledeventstemp']).min()
+        max_pct_tevents_move_1 = 100.0*(fragstats_df['tmove_1']/fragstats_df['numcalledeventstemp']).max()
+        
+        med_pct_tevents_move_2 = 100.0*(fragstats_df['tmove_2']/fragstats_df['numcalledeventstemp']).median()
+        mean_pct_tevents_move_2 = 100.0*(fragstats_df['tmove_2']/fragstats_df['numcalledeventstemp']).mean()
+        std_pct_tevents_move_2 = 100.0*(fragstats_df['tmove_2']/fragstats_df['numcalledeventstemp']).std()
+        minidx_pct_tevents_move_2 = (fragstats_df['tmove_2']/fragstats_df['numcalledeventstemp']).idxmin()
+        maxidx_pct_tevents_move_2 = (fragstats_df['tmove_2']/fragstats_df['numcalledeventstemp']).idxmax()
+        min_pct_tevents_move_2 = 100.0*(fragstats_df['tmove_2']/fragstats_df['numcalledeventstemp']).min()
+        max_pct_tevents_move_2 = 100.0*(fragstats_df['tmove_2']/fragstats_df['numcalledeventstemp']).max()
+        
+        med_pct_tevents_move_3 = 100.0*(fragstats_df['tmove_3']/fragstats_df['numcalledeventstemp']).median()
+        mean_pct_tevents_move_3 = 100.0*(fragstats_df['tmove_3']/fragstats_df['numcalledeventstemp']).mean()
+        std_pct_tevents_move_3 = 100.0*(fragstats_df['tmove_3']/fragstats_df['numcalledeventstemp']).std()
+        minidx_pct_tevents_move_3 = (fragstats_df['tmove_3']/fragstats_df['numcalledeventstemp']).idxmin()
+        maxidx_pct_tevents_move_3 = (fragstats_df['tmove_3']/fragstats_df['numcalledeventstemp']).idxmax()
+        min_pct_tevents_move_3 = 100.0*(fragstats_df['tmove_3']/fragstats_df['numcalledeventstemp']).min()
+        max_pct_tevents_move_3 = 100.0*(fragstats_df['tmove_3']/fragstats_df['numcalledeventstemp']).max()
+        
+        med_pct_tevents_move_4 = 100.0*(fragstats_df['tmove_4']/fragstats_df['numcalledeventstemp']).median()
+        mean_pct_tevents_move_4 = 100.0*(fragstats_df['tmove_4']/fragstats_df['numcalledeventstemp']).mean()
+        std_pct_tevents_move_4 = 100.0*(fragstats_df['tmove_4']/fragstats_df['numcalledeventstemp']).std()
+        minidx_pct_tevents_move_4 = (fragstats_df['tmove_4']/fragstats_df['numcalledeventstemp']).idxmin()
+        maxidx_pct_tevents_move_4 = (fragstats_df['tmove_4']/fragstats_df['numcalledeventstemp']).idxmax()
+        min_pct_tevents_move_4 = 100.0*(fragstats_df['tmove_4']/fragstats_df['numcalledeventstemp']).min()
+        max_pct_tevents_move_4 = 100.0*(fragstats_df['tmove_4']/fragstats_df['numcalledeventstemp']).max()
+        
+        med_pct_tevents_move_5 = 100.0*(fragstats_df['tmove_5']/fragstats_df['numcalledeventstemp']).median()
+        mean_pct_tevents_move_5 = 100.0*(fragstats_df['tmove_5']/fragstats_df['numcalledeventstemp']).mean()
+        std_pct_tevents_move_5 = 100.0*(fragstats_df['tmove_5']/fragstats_df['numcalledeventstemp']).std()
+        minidx_pct_tevents_move_5 = (fragstats_df['tmove_5']/fragstats_df['numcalledeventstemp']).idxmin()
+        maxidx_pct_tevents_move_5 = (fragstats_df['tmove_5']/fragstats_df['numcalledeventstemp']).idxmax()
+        min_pct_tevents_move_5 = 100.0*(fragstats_df['tmove_5']/fragstats_df['numcalledeventstemp']).min()
+        max_pct_tevents_move_5 = 100.0*(fragstats_df['tmove_5']/fragstats_df['numcalledeventstemp']).max()
+        
+        
+        # c moves -- add hascomp?
+        med_pct_cevents_move_0 = 100.0*(fragstats_df['cmove_0']/fragstats_df['numcalledeventscomp']).median()
+        mean_pct_cevents_move_0 = 100.0*(fragstats_df['cmove_0']/fragstats_df['numcalledeventscomp']).mean()
+        std_pct_cevents_move_0 = 100.0*(fragstats_df['cmove_0']/fragstats_df['numcalledeventscomp']).std()
+        minidx_pct_cevents_move_0 = (fragstats_df['cmove_0']/fragstats_df['numcalledeventscomp']).idxmin()
+        maxidx_pct_cevents_move_0 = (fragstats_df['cmove_0']/fragstats_df['numcalledeventscomp']).idxmax()
+        min_pct_cevents_move_0 = 100.0*(fragstats_df['cmove_0']/fragstats_df['numcalledeventscomp']).min()
+        max_pct_cevents_move_0 = 100.0*(fragstats_df['cmove_0']/fragstats_df['numcalledeventscomp']).max()
+
+        med_pct_cevents_move_1 = 100.0*(fragstats_df['cmove_1']/fragstats_df['numcalledeventscomp']).median()
+        mean_pct_cevents_move_1 = 100.0*(fragstats_df['cmove_1']/fragstats_df['numcalledeventscomp']).mean()
+        std_pct_cevents_move_1 = 100.0*(fragstats_df['cmove_1']/fragstats_df['numcalledeventscomp']).std()
+        minidx_pct_cevents_move_1 = (fragstats_df['cmove_1']/fragstats_df['numcalledeventscomp']).idxmin()
+        maxidx_pct_cevents_move_1 = (fragstats_df['cmove_1']/fragstats_df['numcalledeventscomp']).idxmax()
+        min_pct_cevents_move_1 = 100.0*(fragstats_df['cmove_1']/fragstats_df['numcalledeventscomp']).min()
+        max_pct_cevents_move_1 = 100.0*(fragstats_df['cmove_1']/fragstats_df['numcalledeventscomp']).max()
+        
+        med_pct_cevents_move_2 = 100.0*(fragstats_df['cmove_2']/fragstats_df['numcalledeventscomp']).median()
+        mean_pct_cevents_move_2 = 100.0*(fragstats_df['cmove_2']/fragstats_df['numcalledeventscomp']).mean()
+        std_pct_cevents_move_2 = 100.0*(fragstats_df['cmove_2']/fragstats_df['numcalledeventscomp']).std()
+        minidx_pct_cevents_move_2 = (fragstats_df['cmove_2']/fragstats_df['numcalledeventscomp']).idxmin()
+        maxidx_pct_cevents_move_2 = (fragstats_df['cmove_2']/fragstats_df['numcalledeventscomp']).idxmax()
+        min_pct_cevents_move_2 = 100.0*(fragstats_df['cmove_2']/fragstats_df['numcalledeventscomp']).min()
+        max_pct_cevents_move_2 = 100.0*(fragstats_df['cmove_2']/fragstats_df['numcalledeventscomp']).max()
+        
+        med_pct_cevents_move_3 = 100.0*(fragstats_df['cmove_3']/fragstats_df['numcalledeventscomp']).median()
+        mean_pct_cevents_move_3 = 100.0*(fragstats_df['cmove_3']/fragstats_df['numcalledeventscomp']).mean()
+        std_pct_cevents_move_3 = 100.0*(fragstats_df['cmove_3']/fragstats_df['numcalledeventscomp']).std()
+        minidx_pct_cevents_move_3 = (fragstats_df['cmove_3']/fragstats_df['numcalledeventscomp']).idxmin()
+        maxidx_pct_cevents_move_3 = (fragstats_df['cmove_3']/fragstats_df['numcalledeventscomp']).idxmax()
+        min_pct_cevents_move_3 = 100.0*(fragstats_df['cmove_3']/fragstats_df['numcalledeventscomp']).min()
+        max_pct_cevents_move_3 = 100.0*(fragstats_df['cmove_3']/fragstats_df['numcalledeventscomp']).max()
+        
+        med_pct_cevents_move_4 = 100.0*(fragstats_df['cmove_4']/fragstats_df['numcalledeventscomp']).median()
+        mean_pct_cevents_move_4 = 100.0*(fragstats_df['cmove_4']/fragstats_df['numcalledeventscomp']).mean()
+        std_pct_cevents_move_4 = 100.0*(fragstats_df['cmove_4']/fragstats_df['numcalledeventscomp']).std()
+        minidx_pct_cevents_move_4 = (fragstats_df['cmove_4']/fragstats_df['numcalledeventscomp']).idxmin()
+        maxidx_pct_cevents_move_4 = (fragstats_df['cmove_4']/fragstats_df['numcalledeventscomp']).idxmax()
+        min_pct_cevents_move_4 = 100.0*(fragstats_df['cmove_4']/fragstats_df['numcalledeventscomp']).min()
+        max_pct_cevents_move_4 = 100.0*(fragstats_df['cmove_4']/fragstats_df['numcalledeventscomp']).max()
+        
+        med_pct_cevents_move_5 = 100.0*(fragstats_df['cmove_5']/fragstats_df['numcalledeventscomp']).median()
+        mean_pct_cevents_move_5 = 100.0*(fragstats_df['cmove_5']/fragstats_df['numcalledeventscomp']).mean()
+        std_pct_cevents_move_5 = 100.0*(fragstats_df['cmove_5']/fragstats_df['numcalledeventscomp']).std()
+        minidx_pct_cevents_move_5 = (fragstats_df['cmove_5']/fragstats_df['numcalledeventscomp']).idxmin()
+        maxidx_pct_cevents_move_5 = (fragstats_df['cmove_5']/fragstats_df['numcalledeventscomp']).idxmax()
+        min_pct_cevents_move_5 = 100.0*(fragstats_df['cmove_5']/fragstats_df['numcalledeventscomp']).min()
+        max_pct_cevents_move_5 = 100.0*(fragstats_df['cmove_5']/fragstats_df['numcalledeventscomp']).max()
+
+        print ("\t").join(["metric", "median", "mean", "std_dev", "min", "max"])
+        print ("\t").join([str(e) for e in ["template_0_moves", med_pct_tevents_move_0, mean_pct_tevents_move_0, std_pct_tevents_move_0, min_pct_tevents_move_0, max_pct_tevents_move_0]])
+        print ("\t").join([str(e) for e in ["template_1_moves", med_pct_tevents_move_1, mean_pct_tevents_move_1, std_pct_tevents_move_1, min_pct_tevents_move_1, max_pct_tevents_move_1]])
+        print ("\t").join([str(e) for e in ["template_2_moves", med_pct_tevents_move_2, mean_pct_tevents_move_2, std_pct_tevents_move_2, min_pct_tevents_move_2, max_pct_tevents_move_2]])
+        print ("\t").join([str(e) for e in ["template_3_moves", med_pct_tevents_move_3, mean_pct_tevents_move_3, std_pct_tevents_move_3, min_pct_tevents_move_3, max_pct_tevents_move_3]])
+        print ("\t").join([str(e) for e in ["template_4_moves", med_pct_tevents_move_4, mean_pct_tevents_move_4, std_pct_tevents_move_4, min_pct_tevents_move_4, max_pct_tevents_move_4]])
+        print ("\t").join([str(e) for e in ["template_5_moves", med_pct_tevents_move_5, mean_pct_tevents_move_5, std_pct_tevents_move_5, min_pct_tevents_move_5, max_pct_tevents_move_5]])
+        print ("\t").join([str(e) for e in ["complement_0_moves", med_pct_cevents_move_0, mean_pct_cevents_move_0, std_pct_cevents_move_0, min_pct_cevents_move_0, max_pct_cevents_move_0]])
+        print ("\t").join([str(e) for e in ["complement_1_moves", med_pct_cevents_move_1, mean_pct_cevents_move_1, std_pct_cevents_move_1, min_pct_cevents_move_1, max_pct_cevents_move_1]])
+        print ("\t").join([str(e) for e in ["complement_2_moves", med_pct_cevents_move_2, mean_pct_cevents_move_2, std_pct_cevents_move_2, min_pct_cevents_move_2, max_pct_cevents_move_2]])
+        print ("\t").join([str(e) for e in ["complement_3_moves", med_pct_cevents_move_3, mean_pct_cevents_move_3, std_pct_cevents_move_3, min_pct_cevents_move_3, max_pct_cevents_move_3]])
+        print ("\t").join([str(e) for e in ["complement_4_moves", med_pct_cevents_move_4, mean_pct_cevents_move_4, std_pct_cevents_move_4, min_pct_cevents_move_4, max_pct_cevents_move_4]])
+        print ("\t").join([str(e) for e in ["complement_5_moves", med_pct_cevents_move_5, mean_pct_cevents_move_5, std_pct_cevents_move_5, min_pct_cevents_move_5, max_pct_cevents_move_5]])
+        print
+        print minidx_pct_tevents_move_0, maxidx_pct_tevents_move_0
+        minidx_pct_tevents_move_0, maxidx_pct_tevents_move_0 = int(minidx_pct_tevents_move_0), int(maxidx_pct_tevents_move_0)
+
+        print ("\t").join(["#metric", "strand", "value", "numevents_from_molecule", "seq_len_2d", "seq_len_template", "seq_len_complement", "Q_2d", "Q_template", "Q_complement", "name"])
+        print "min_pct_0_moves", "template", min_pct_tevents_move_0, fragstats_df['numevents'][minidx_pct_tevents_move_0], nonetodash(fragstats_df['seqlen2d'][minidx_pct_tevents_move_0]), nonetodash(fragstats_df['seqlentemp'][minidx_pct_tevents_move_0]), nonetodash(fragstats_df['seqlencomp'][minidx_pct_tevents_move_0]), nonetodash(fragstats_df['meanscore2d'][minidx_pct_tevents_move_0]), nonetodash(fragstats_df['meanscoretemp'][minidx_pct_tevents_move_0]), nonetodash(fragstats_df['meanscorecomp'][minidx_pct_tevents_move_0]), fragstats_df['name'][minidx_pct_tevents_move_0]
+        print "max_pct_0_moves", "template", max_pct_tevents_move_0, fragstats_df['numevents'][maxidx_pct_tevents_move_0], nonetodash(fragstats_df['seqlen2d'][maxidx_pct_tevents_move_0]), nonetodash(fragstats_df['seqlentemp'][maxidx_pct_tevents_move_0]), nonetodash(fragstats_df['seqlencomp'][maxidx_pct_tevents_move_0]), nonetodash(fragstats_df['meanscore2d'][maxidx_pct_tevents_move_0]), nonetodash(fragstats_df['meanscoretemp'][maxidx_pct_tevents_move_0]), nonetodash(fragstats_df['meanscorecomp'][maxidx_pct_tevents_move_0]), fragstats_df['name'][maxidx_pct_tevents_move_0]
+        print "min_pct_1_moves", "template", min_pct_tevents_move_1, fragstats_df['numevents'][minidx_pct_tevents_move_1], nonetodash(fragstats_df['seqlen2d'][minidx_pct_tevents_move_1]), nonetodash(fragstats_df['seqlentemp'][minidx_pct_tevents_move_1]), nonetodash(fragstats_df['seqlencomp'][minidx_pct_tevents_move_1]), nonetodash(fragstats_df['meanscore2d'][minidx_pct_tevents_move_1]), nonetodash(fragstats_df['meanscoretemp'][minidx_pct_tevents_move_1]), nonetodash(fragstats_df['meanscorecomp'][minidx_pct_tevents_move_1]), fragstats_df['name'][minidx_pct_tevents_move_1]
+        print "max_pct_1_moves", "template", max_pct_tevents_move_1, fragstats_df['numevents'][maxidx_pct_tevents_move_1], nonetodash(fragstats_df['seqlen2d'][maxidx_pct_tevents_move_1]), nonetodash(fragstats_df['seqlentemp'][maxidx_pct_tevents_move_1]), nonetodash(fragstats_df['seqlencomp'][maxidx_pct_tevents_move_1]), nonetodash(fragstats_df['meanscore2d'][maxidx_pct_tevents_move_1]), nonetodash(fragstats_df['meanscoretemp'][maxidx_pct_tevents_move_1]), nonetodash(fragstats_df['meanscorecomp'][maxidx_pct_tevents_move_1]), fragstats_df['name'][maxidx_pct_tevents_move_1]
+        print "min_pct_2_moves", "template", min_pct_tevents_move_2, fragstats_df['numevents'][minidx_pct_tevents_move_2], nonetodash(fragstats_df['seqlen2d'][minidx_pct_tevents_move_2]), nonetodash(fragstats_df['seqlentemp'][minidx_pct_tevents_move_2]), nonetodash(fragstats_df['seqlencomp'][minidx_pct_tevents_move_2]), nonetodash(fragstats_df['meanscore2d'][minidx_pct_tevents_move_2]), nonetodash(fragstats_df['meanscoretemp'][minidx_pct_tevents_move_2]), nonetodash(fragstats_df['meanscorecomp'][minidx_pct_tevents_move_2]), fragstats_df['name'][minidx_pct_tevents_move_2]
+        print "max_pct_2_moves", "template", max_pct_tevents_move_2, fragstats_df['numevents'][maxidx_pct_tevents_move_2], nonetodash(fragstats_df['seqlen2d'][maxidx_pct_tevents_move_2]), nonetodash(fragstats_df['seqlentemp'][maxidx_pct_tevents_move_2]), nonetodash(fragstats_df['seqlencomp'][maxidx_pct_tevents_move_2]), nonetodash(fragstats_df['meanscore2d'][maxidx_pct_tevents_move_2]), nonetodash(fragstats_df['meanscoretemp'][maxidx_pct_tevents_move_2]), nonetodash(fragstats_df['meanscorecomp'][maxidx_pct_tevents_move_2]), fragstats_df['name'][maxidx_pct_tevents_move_2]
+        print "min_pct_3_moves", "template", min_pct_tevents_move_3, fragstats_df['numevents'][minidx_pct_tevents_move_3], nonetodash(fragstats_df['seqlen2d'][minidx_pct_tevents_move_3]), nonetodash(fragstats_df['seqlentemp'][minidx_pct_tevents_move_3]), nonetodash(fragstats_df['seqlencomp'][minidx_pct_tevents_move_3]), nonetodash(fragstats_df['meanscore2d'][minidx_pct_tevents_move_3]), nonetodash(fragstats_df['meanscoretemp'][minidx_pct_tevents_move_3]), nonetodash(fragstats_df['meanscorecomp'][minidx_pct_tevents_move_3]), fragstats_df['name'][minidx_pct_tevents_move_3]
+        print "max_pct_3_moves", "template", max_pct_tevents_move_3, fragstats_df['numevents'][maxidx_pct_tevents_move_3], nonetodash(fragstats_df['seqlen2d'][maxidx_pct_tevents_move_3]), nonetodash(fragstats_df['seqlentemp'][maxidx_pct_tevents_move_3]), nonetodash(fragstats_df['seqlencomp'][maxidx_pct_tevents_move_3]), nonetodash(fragstats_df['meanscore2d'][maxidx_pct_tevents_move_3]), nonetodash(fragstats_df['meanscoretemp'][maxidx_pct_tevents_move_3]), nonetodash(fragstats_df['meanscorecomp'][maxidx_pct_tevents_move_3]), fragstats_df['name'][maxidx_pct_tevents_move_3]
+        print "min_pct_4_moves", "template", min_pct_tevents_move_4, fragstats_df['numevents'][minidx_pct_tevents_move_4], nonetodash(fragstats_df['seqlen2d'][minidx_pct_tevents_move_4]), nonetodash(fragstats_df['seqlentemp'][minidx_pct_tevents_move_4]), nonetodash(fragstats_df['seqlencomp'][minidx_pct_tevents_move_4]), nonetodash(fragstats_df['meanscore2d'][minidx_pct_tevents_move_4]), nonetodash(fragstats_df['meanscoretemp'][minidx_pct_tevents_move_4]), nonetodash(fragstats_df['meanscorecomp'][minidx_pct_tevents_move_4]), fragstats_df['name'][minidx_pct_tevents_move_4]
+        print "max_pct_4_moves", "template", max_pct_tevents_move_4, fragstats_df['numevents'][maxidx_pct_tevents_move_4], nonetodash(fragstats_df['seqlen2d'][maxidx_pct_tevents_move_4]), nonetodash(fragstats_df['seqlentemp'][maxidx_pct_tevents_move_4]), nonetodash(fragstats_df['seqlencomp'][maxidx_pct_tevents_move_4]), nonetodash(fragstats_df['meanscore2d'][maxidx_pct_tevents_move_4]), nonetodash(fragstats_df['meanscoretemp'][maxidx_pct_tevents_move_4]), nonetodash(fragstats_df['meanscorecomp'][maxidx_pct_tevents_move_4]), fragstats_df['name'][maxidx_pct_tevents_move_4]
+        print "min_pct_5_moves", "template", min_pct_tevents_move_5, fragstats_df['numevents'][minidx_pct_tevents_move_5], nonetodash(fragstats_df['seqlen2d'][minidx_pct_tevents_move_5]), nonetodash(fragstats_df['seqlentemp'][minidx_pct_tevents_move_5]), nonetodash(fragstats_df['seqlencomp'][minidx_pct_tevents_move_5]), nonetodash(fragstats_df['meanscore2d'][minidx_pct_tevents_move_5]), nonetodash(fragstats_df['meanscoretemp'][minidx_pct_tevents_move_5]), nonetodash(fragstats_df['meanscorecomp'][minidx_pct_tevents_move_5]), fragstats_df['name'][minidx_pct_tevents_move_5]
+        print "max_pct_5_moves", "template", max_pct_tevents_move_5, fragstats_df['numevents'][maxidx_pct_tevents_move_5], nonetodash(fragstats_df['seqlen2d'][maxidx_pct_tevents_move_5]), nonetodash(fragstats_df['seqlentemp'][maxidx_pct_tevents_move_5]), nonetodash(fragstats_df['seqlencomp'][maxidx_pct_tevents_move_5]), nonetodash(fragstats_df['meanscore2d'][maxidx_pct_tevents_move_5]), nonetodash(fragstats_df['meanscoretemp'][maxidx_pct_tevents_move_5]), nonetodash(fragstats_df['meanscorecomp'][maxidx_pct_tevents_move_5]), fragstats_df['name'][maxidx_pct_tevents_move_5]
+
+        print "min_pct_0_moves", "complement", min_pct_cevents_move_0, fragstats_df['numevents'][minidx_pct_cevents_move_0], nonetodash(fragstats_df['seqlen2d'][minidx_pct_cevents_move_0]), nonetodash(fragstats_df['seqlentemp'][minidx_pct_cevents_move_0]), nonetodash(fragstats_df['seqlencomp'][minidx_pct_cevents_move_0]), nonetodash(fragstats_df['meanscore2d'][minidx_pct_cevents_move_0]), nonetodash(fragstats_df['meanscoretemp'][minidx_pct_cevents_move_0]), nonetodash(fragstats_df['meanscorecomp'][minidx_pct_cevents_move_0]), fragstats_df['name'][minidx_pct_cevents_move_0]
+        print "max_pct_0_moves", "complement", max_pct_cevents_move_0, fragstats_df['numevents'][maxidx_pct_cevents_move_0], nonetodash(fragstats_df['seqlen2d'][maxidx_pct_cevents_move_0]), nonetodash(fragstats_df['seqlentemp'][maxidx_pct_cevents_move_0]), nonetodash(fragstats_df['seqlencomp'][maxidx_pct_cevents_move_0]), nonetodash(fragstats_df['meanscore2d'][maxidx_pct_cevents_move_0]), nonetodash(fragstats_df['meanscoretemp'][maxidx_pct_cevents_move_0]), nonetodash(fragstats_df['meanscorecomp'][maxidx_pct_cevents_move_0]), fragstats_df['name'][maxidx_pct_cevents_move_0]
+        print "min_pct_1_moves", "complement", min_pct_cevents_move_1, fragstats_df['numevents'][minidx_pct_cevents_move_1], nonetodash(fragstats_df['seqlen2d'][minidx_pct_cevents_move_1]), nonetodash(fragstats_df['seqlentemp'][minidx_pct_cevents_move_1]), nonetodash(fragstats_df['seqlencomp'][minidx_pct_cevents_move_1]), nonetodash(fragstats_df['meanscore2d'][minidx_pct_cevents_move_1]), nonetodash(fragstats_df['meanscoretemp'][minidx_pct_cevents_move_1]), nonetodash(fragstats_df['meanscorecomp'][minidx_pct_cevents_move_1]), fragstats_df['name'][minidx_pct_cevents_move_1]
+        print "max_pct_1_moves", "complement", max_pct_cevents_move_1, fragstats_df['numevents'][maxidx_pct_cevents_move_1], nonetodash(fragstats_df['seqlen2d'][maxidx_pct_cevents_move_1]), nonetodash(fragstats_df['seqlentemp'][maxidx_pct_cevents_move_1]), nonetodash(fragstats_df['seqlencomp'][maxidx_pct_cevents_move_1]), nonetodash(fragstats_df['meanscore2d'][maxidx_pct_cevents_move_1]), nonetodash(fragstats_df['meanscoretemp'][maxidx_pct_cevents_move_1]), nonetodash(fragstats_df['meanscorecomp'][maxidx_pct_cevents_move_1]), fragstats_df['name'][maxidx_pct_cevents_move_1]
+        print "min_pct_2_moves", "complement", min_pct_cevents_move_2, fragstats_df['numevents'][minidx_pct_cevents_move_2], nonetodash(fragstats_df['seqlen2d'][minidx_pct_cevents_move_2]), nonetodash(fragstats_df['seqlentemp'][minidx_pct_cevents_move_2]), nonetodash(fragstats_df['seqlencomp'][minidx_pct_cevents_move_2]), nonetodash(fragstats_df['meanscore2d'][minidx_pct_cevents_move_2]), nonetodash(fragstats_df['meanscoretemp'][minidx_pct_cevents_move_2]), nonetodash(fragstats_df['meanscorecomp'][minidx_pct_cevents_move_2]), fragstats_df['name'][minidx_pct_cevents_move_2]
+        print "max_pct_2_moves", "complement", max_pct_cevents_move_2, fragstats_df['numevents'][maxidx_pct_cevents_move_2], nonetodash(fragstats_df['seqlen2d'][maxidx_pct_cevents_move_2]), nonetodash(fragstats_df['seqlentemp'][maxidx_pct_cevents_move_2]), nonetodash(fragstats_df['seqlencomp'][maxidx_pct_cevents_move_2]), nonetodash(fragstats_df['meanscore2d'][maxidx_pct_cevents_move_2]), nonetodash(fragstats_df['meanscoretemp'][maxidx_pct_cevents_move_2]), nonetodash(fragstats_df['meanscorecomp'][maxidx_pct_cevents_move_2]), fragstats_df['name'][maxidx_pct_cevents_move_2]
+        print "min_pct_3_moves", "complement", min_pct_cevents_move_3, fragstats_df['numevents'][minidx_pct_cevents_move_3], nonetodash(fragstats_df['seqlen2d'][minidx_pct_cevents_move_3]), nonetodash(fragstats_df['seqlentemp'][minidx_pct_cevents_move_3]), nonetodash(fragstats_df['seqlencomp'][minidx_pct_cevents_move_3]), nonetodash(fragstats_df['meanscore2d'][minidx_pct_cevents_move_3]), nonetodash(fragstats_df['meanscoretemp'][minidx_pct_cevents_move_3]), nonetodash(fragstats_df['meanscorecomp'][minidx_pct_cevents_move_3]), fragstats_df['name'][minidx_pct_cevents_move_3]
+        print "max_pct_3_moves", "complement", max_pct_cevents_move_3, fragstats_df['numevents'][maxidx_pct_cevents_move_3], nonetodash(fragstats_df['seqlen2d'][maxidx_pct_cevents_move_3]), nonetodash(fragstats_df['seqlentemp'][maxidx_pct_cevents_move_3]), nonetodash(fragstats_df['seqlencomp'][maxidx_pct_cevents_move_3]), nonetodash(fragstats_df['meanscore2d'][maxidx_pct_cevents_move_3]), nonetodash(fragstats_df['meanscoretemp'][maxidx_pct_cevents_move_3]), nonetodash(fragstats_df['meanscorecomp'][maxidx_pct_cevents_move_3]), fragstats_df['name'][maxidx_pct_cevents_move_3]
+        print "min_pct_4_moves", "complement", min_pct_cevents_move_4, fragstats_df['numevents'][minidx_pct_cevents_move_4], nonetodash(fragstats_df['seqlen2d'][minidx_pct_cevents_move_4]), nonetodash(fragstats_df['seqlentemp'][minidx_pct_cevents_move_4]), nonetodash(fragstats_df['seqlencomp'][minidx_pct_cevents_move_4]), nonetodash(fragstats_df['meanscore2d'][minidx_pct_cevents_move_4]), nonetodash(fragstats_df['meanscoretemp'][minidx_pct_cevents_move_4]), nonetodash(fragstats_df['meanscorecomp'][minidx_pct_cevents_move_4]), fragstats_df['name'][minidx_pct_cevents_move_4]
+        print "max_pct_4_moves", "complement", max_pct_cevents_move_4, fragstats_df['numevents'][maxidx_pct_cevents_move_4], nonetodash(fragstats_df['seqlen2d'][maxidx_pct_cevents_move_4]), nonetodash(fragstats_df['seqlentemp'][maxidx_pct_cevents_move_4]), nonetodash(fragstats_df['seqlencomp'][maxidx_pct_cevents_move_4]), nonetodash(fragstats_df['meanscore2d'][maxidx_pct_cevents_move_4]), nonetodash(fragstats_df['meanscoretemp'][maxidx_pct_cevents_move_4]), nonetodash(fragstats_df['meanscorecomp'][maxidx_pct_cevents_move_4]), fragstats_df['name'][maxidx_pct_cevents_move_4]
+        print "min_pct_5_moves", "complement", min_pct_cevents_move_5, fragstats_df['numevents'][minidx_pct_cevents_move_5], nonetodash(fragstats_df['seqlen2d'][minidx_pct_cevents_move_5]), nonetodash(fragstats_df['seqlentemp'][minidx_pct_cevents_move_5]), nonetodash(fragstats_df['seqlencomp'][minidx_pct_cevents_move_5]), nonetodash(fragstats_df['meanscore2d'][minidx_pct_cevents_move_5]), nonetodash(fragstats_df['meanscoretemp'][minidx_pct_cevents_move_5]), nonetodash(fragstats_df['meanscorecomp'][minidx_pct_cevents_move_5]), fragstats_df['name'][minidx_pct_cevents_move_5]
+        print "max_pct_5_moves", "complement", max_pct_cevents_move_5, fragstats_df['numevents'][maxidx_pct_cevents_move_5], nonetodash(fragstats_df['seqlen2d'][maxidx_pct_cevents_move_5]), nonetodash(fragstats_df['seqlentemp'][maxidx_pct_cevents_move_5]), nonetodash(fragstats_df['seqlencomp'][maxidx_pct_cevents_move_5]), nonetodash(fragstats_df['meanscore2d'][maxidx_pct_cevents_move_5]), nonetodash(fragstats_df['meanscoretemp'][maxidx_pct_cevents_move_5]), nonetodash(fragstats_df['meanscorecomp'][maxidx_pct_cevents_move_5]), fragstats_df['name'][maxidx_pct_cevents_move_5]
+        
 ##    move tc ratios -- is there a pattern?
-##    if timecheck:
-##        n_time_errors = sum(fragstats_df['timeerror'])
-##        pct_time_errors = 100.0*n_time_errors/n_molecules
+    if timecheck:
+        n_time_errors = sum(fragstats_df['timeerror'])
+        pct_time_errors = 100.0*n_time_errors/n_molecules
 
 
 
+
+def nonetodash(x):
+    if not x:
+        return "-"
+    elif np.isnan(x):
+        return "-"
+    else:
+        return x
 
 def run(parser, args):
     fragstats_df = make_fragstats_dataframe(args.fragfile, extensive=args.extensive, timecheck=args.checktime)

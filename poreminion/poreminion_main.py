@@ -148,10 +148,10 @@ Returns tab-delimited table with columns:
 16 = heat sink temperature while molecule traversed
 17 = num called template events (after events pruned during base-calling)
 18 = num called complement events (after events pruned during base-calling)
-19 = num skips in template
-20 = num skips in complement
-21 = num stays in template
-22 = num stays in complement
+19 = num skips in template (is actually number 0 moves found in extensive analysis)
+20 = num skips in complement (is actually number 0 moves found in extensive analysis)
+21 = num stays in template (is actually number 2 moves found in extensive analysis, any 3,4,5 moves not counted here)
+22 = num stays in complement (is actually number 2 moves found in extensive analysis, any 3,4,5 moves not counted here)
 23 = strand score template
 24 = strand score complement
 25 = num stutters in template
@@ -192,6 +192,10 @@ From the molecule sizes, the "Molecule N50" can be computed using the nx subcomm
                               help='''This tacks on timetest info (search for time errors in start times) as the last field
                                     --> 0 or 1 for no/yes there is a time error present. Adds considerable computation time.
                                     If used with --extensive, will take even more time than that alone.''')
+
+    parser_fragstats.add_argument('--parallel', "-p",
+                               type=int, required=False, default=1,
+                              help='''Parallelize (New) - provide integer. Default: 1. Notes: No need to go higher than 1 for small jobs. Higher than 1 may not work on regular mac book pros, but does work on Oscar, Brown University' super computing cluster..''')
 
     parser_fragstats.add_argument('files', metavar='FILES', nargs='+',
                                help='The input FAST5 files.')

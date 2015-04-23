@@ -1,13 +1,13 @@
-poreminion
+poreminion - 0.3.2
 ==========
 
 Additional tools for analyzing Oxford Nanopore minION data (built on top of poretools) by John Urban.
 
 Tools:
-
     uncalled            Find Fast5 files that were not base-called.
     timetest            Find Fast5 files that have event times that are earlier than event times before it suggesting malfunction/erroneous read.
     fragstats           Run this on set of base-called fast5 files.
+                        Returns tab-delimited table with columns:
                         1 = readname,
                         2 = estimated molecule/fragment size,
                         3 = number input events,
@@ -58,20 +58,24 @@ Tools:
                         This is the sum of unique molecule lengths rather than summing all read types from each molecule.
                         From the molecule sizes, the "Molecule N50" can be computed using the nx subcommand on the fragstats file and specifying colum 2.
                                                                             
+    fragsummary         To summarize fragstats, use this with a tab-delimited, fragstats table file (output of fragstats subcommand).
     nx                  Computes N50 or NX values on columns of a file or from comma-separated list.
+    fragrobust          Looks at fragsizes in fragstats. Sees what percent of fragsizes are "robust" to all sequence lengths from same molecule.
     pct2d               Get the proportion of reads that have a 2D read
     has2d               Prints 2 columns: filename, has2D =  True/False
     numevents           Print 2 column list of file and number of input events in file.
     events              Look at events inside raw and basecalled fast5 files. 
+    info                Get info about run and, if file is basecalled, basecalling. 
     dataconc            Plot sum of read lengths in each bin for a given set of bins for a set of FAST5 files.
                         This is the type of plot seen in MinKNOW while sequencing.
     qualpos             Get the qual score distribution over positions in reads
-    qualdist            Get the qual score composition of a set of FAST5 files
+    qualdist            Get the qual score composition of a set of FAST5 files.
+                        This tool is from poretools, but poreminion allows you to select the type of read.
     kmer                Count kmers in reads or reference.
     kmerplot            Plot kmer counts in reads or reference.
     kmerdiff            Get fold-enrichment values of kmers in reads vs reference.
     winner              Get the longest read from a set of FAST5 files.
-                        Similar to poretools winner, only allows type=each and offers a details only option.
+                        Similar to poretools winner, only allows type=each and offers a details only option.                        
 
 Requirements
 ==========
@@ -88,9 +92,11 @@ rpy2 >= 2.4.2
 
 h5py >= 2.0
 
-pandas>=0.14.1
+pandas >= 0.14.1
 
-matplotlib>=1.4.0
+matplotlib >= 1.4.0
+
+joblib >= 0.8.4 (used in fragstats)
 
 edgeR (only for kmer 'differential expression' analysis)
 
@@ -120,3 +126,5 @@ download poretools zip; cd poretools; python setup.py install
 pip install pandas
 
 pip install matplotlib
+
+pip install joblib

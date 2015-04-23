@@ -19,6 +19,10 @@ def run_subtool(parser, args):
         import findTimeErrors as submodule
     elif args.command == 'fragstats':
         import fragstats as submodule
+    elif args.command == 'fragsummary':
+        import fragsummary as submodule
+    elif args.command == 'fragrobust':
+        import robust as submodule
     elif args.command == 'nx':
         import nX as submodule
     elif args.command == 'pct2d':
@@ -29,6 +33,8 @@ def run_subtool(parser, args):
         import numevents as submodule
     elif args.command == 'events':
         import get_events as submodule
+    elif args.command == 'info':
+        import info as submodule
     elif args.command == 'dataconc':
         import dataconc as submodule
     elif args.command == 'qualpos':
@@ -138,19 +144,30 @@ Returns tab-delimited table with columns:
 12 = mean qscore of template sequence,
 13 = mean qscore of complement,
 14 = ratio of number template events to number complement events,
-15 = "robust" 0 or 1 for whether temp, comp, and 2d sequence lengths are all within fragsize +/- 20percent. 
+15 = channel number molecule traversed
+16 = heat sink temperature while molecule traversed
+17 = num called template events (after events pruned during base-calling)
+18 = num called complement events (after events pruned during base-calling)
+19 = num skips in template
+20 = num skips in complement
+21 = num stays in template
+22 = num stays in complement
+23 = strand score template
+24 = strand score complement
+25 = num stutters in template
+26 = num stutters in complement
 
 If --extensive used:
-16 = starttime of all events,
-17 = endtime of all events,
-18 = slope of all events,
-19 = mean duration across all events,
-20 = median duration across all events,
-21 = sd of all event durations,
-22 = min event duration,
-23 = max event duration,
-24-29 = num temp events with 0,1,2,3,4,5 moves from base-caller,
-30-35 = num comp events with 0,1,2,3,4,5 moves from base caller.
+27 = starttime,
+28 = endtime,
+29 = slope across all events,
+30 = mean duration across all events,
+31 = median duration across all events,
+32 = sd of all event durations,
+33 = min event duration,
+34 = max event duration,
+35-40 = num temp events with 0,1,2,3,4,5 moves from base-caller,
+41-46 = num comp events with 0,1,2,3,4,5 moves from base caller.
 
 If --checktime used:
 Final column = 0 or 1 for no/yes there is a time error present.
@@ -182,7 +199,35 @@ From the molecule sizes, the "Molecule N50" can be computed using the nx subcomm
     parser_fragstats.set_defaults(func=run_subtool)
 
 
-     ##########
+    ##########
+    # fragsummary
+    ##########
+    parser_fragsummary = subparsers.add_parser('fragsummary',
+                                        help='''To summarize fragstats, use this with a tab-delimited, fragstats table file (output of fragstats subcommand).''')
+    parser_fragsummary.add_argument('--fragfile', "-f",
+                               type=str, required=True,
+                              help='''Specify path to the fragstats table file (output of fragstats subcommand).
+                                    ''')    
+    parser_fragsummary.add_argument('--extensive', "-e",
+                               action="store_true", required=False, default=False,
+                              help='''Use this flag if the fragstats file was generated with -e/--extensive option.
+                                    ''')
+    parser_fragsummary.add_argument('--checktime', "-t",
+                               action="store_true", required=False, default=False,
+                              help='''Use this flag if the fragstats file was generated with -t/--checktime option.''')
+
+    
+    parser_fragsummary.set_defaults(func=run_subtool)
+
+
+    ##########
+    # fragsort/plot
+    ##########
+
+
+    
+
+    ##########
     # nX
     ##########
     parser_nx = subparsers.add_parser('nx',
@@ -214,6 +259,20 @@ From the molecule sizes, the "Molecule N50" can be computed using the nx subcomm
     parser_nx.set_defaults(func=run_subtool)   
 
 
+    ##########
+    # robust
+    ##########
+    parser_robust = subparsers.add_parser('fragrobust',
+                                        help='''Looks at fragsizes in fragstats. Sees what percent of fragsizes are "robust" to all sequence lengths from same molecule.''')
+    parser_robust.add_argument('--fragfile', "-f",
+                               type=str, required=False, default=False,
+                              help='''Specify path to the fragstats table file (output of fragstats subcommand).
+                                    ''')    
+    parser_robust.add_argument('--message', "-m",
+                               action="store_true", required=False, default=False,
+                              help='''Use this flag print caution message on this metric. If used with -f, it is header message.
+                                    ''')
+    parser_robust.set_defaults(func=run_subtool)
 
     ##########
     # pct 2D
@@ -278,6 +337,17 @@ From the molecule sizes, the "Molecule N50" can be computed using the nx subcomm
 
 
 
+    ##########
+    # info
+    ##########
+
+    parser_info = subparsers.add_parser('info',
+                                        help='''Get info about run and, if file is basecalled, basecalling. ''')
+    parser_info.add_argument("-f5", '--fast5', type=str, default=None, help=''' Path to fast5 file.''')    
+
+    parser_info.add_argument("-b", '--basic', action="store_true", default=False, help='''Some basic info.''')
+    parser_info.add_argument("-a", '--all', action="store_true", default=False, help='''All info.''') 
+    parser_info.set_defaults(func=run_subtool)
 
 
 
@@ -427,7 +497,8 @@ This is the type of plot seen in MinKNOW while sequencing.''')
     # qualdist
     ##########
     parser_qualdist = subparsers.add_parser('qualdist',
-                                        help='Get the qual score composition of a set of FAST5 files')
+                                        help='''Get the qual score composition of a set of FAST5 files.
+This tool is from poretools, but poreminion allows you to select the type of read.''')
     parser_qualdist.add_argument('files', metavar='FILES', nargs='+',
                              help='The input FAST5 files.')
     parser_qualdist.add_argument('--type',

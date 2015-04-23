@@ -1,3 +1,34 @@
+0.3.1
+Added:
+- fragsummary -- summarizes a fragstats table file -- lots of useful info. 0.3.2 will have even more info from fragstats summarized.
+- fragrobust -- robust calculation -- caution: this is somewhat useless (see message that comes with it) and may be removed in next bump.
+- info -- gathers a bunch of info from a given fast5 file
+
+Updated:
+- fragstats
+  --> has2d and hascomp fields are now 1 and 0 instead of "True" and "False"
+  --> no longer computes "robustness" as this metric is somewhat useless. For now, I kept it as its own subcommand "fragrobust". Be sure to see the message there.
+  --> computes a bunch of new stuff even in non-extensive mode that do not much affect the speed (columns and metrics below):
+	--> 15 = channel number molecule traversed
+	--> 16 = heat sink temperature while molecule traversed
+	--> 17 = num called template events (after events pruned during base-calling)
+	--> 18 = num called complement events (after events pruned during base-calling)
+	--> 19 = num skips in template
+	--> 20 = num skips in complement
+	--> 21 = num stays in template
+	--> 22 = num stays in complement
+	--> 23 = strand score template
+	--> 24 = strand score complement
+	--> 25 = num stutters in template
+	--> 26 = num stutters in complement
+
+What I know is coming in 0.3.2:
+- fragsummary will be more fully fleshed out, summarizing pieces of fragstats tables that the current version does not do yet
+
+
+
+
+
 0.3.0
 More subtools added such as:
 - nx (example use: calculate n50 on file column)
@@ -6,12 +37,17 @@ More subtools added such as:
 - timetest (example use: after filtering base-called files for those that weren't base-called, further filter for files with the known time error (rare and will soon be fixed).)
 
 Updated:
-- frastats --has an extensive option that gives much more info, but takes longer. Also has a timetest option.
+- frastats 
+    --> has an extensive option that gives much more info, but takes longer
+    --> has a timetest option
 
-Some unfinished subtools removed (at least for now).
+Unfinished subtools (that appeared by name only in previous versions although they did not do anything) have been removed (at least for now).
 
 What I know is upcoming in 0.3.1
 - update dataconc to be faster -- no need for pandas
+- summarizing fragstats files
+- plotting fragstats files
+
 
 
 

@@ -1,4 +1,4 @@
-poreminion - 0.4.0
+poreminion - 0.4.1
 ==========
 
 Additional tools for analyzing Oxford Nanopore minION data by John Urban. 
@@ -75,6 +75,7 @@ Tools:
     has2d               Prints 2 columns: filename, has2D =  True/False
     numevents           Print 2 column list of file and number of input events in file.
     events              Look at events inside raw and basecalled fast5 files. 
+    staypos             Get BED output of stay positions in read(s). 
     info                Get info about run and, if file is basecalled, basecalling. 
     g4                  Use quadparser suite (for identifying G4 motifs) on set of fast5 files (or in a FASTA/FASTQ file) and get a BED file with info for each match.
                             The default parameters search for '([gG]{3,}\w{1,7}){3,}[gG]{3,}' and its complement '([cC]{3,}\w{1,7}){3,}[cC]{3,}'.

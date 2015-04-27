@@ -1,7 +1,111 @@
 #info
 import h5py, os
-from events_tools_pm import is_basecalled
 import poreminion
+#logging
+import logging
+logger = logging.getLogger('poreminion')
+logger.setLevel(logging.INFO)
+
+def is_basecalled(f5):
+    try:
+        f5['/Analyses/Basecall_2D_000']
+        return True
+    except KeyError:
+        return False
+
+def get_mean_qscore(f5connection, readtype):
+    '''readtpye in 2d, template, complement'''
+    if readtype == "2d":
+        path="/Analyses/Basecall_2D_000/Summary/basecall_2d"
+    elif readtype == "template":
+        path="/Analyses/Basecall_2D_000/Summary/basecall_1d_template"
+    elif readtype == "complement":
+        path="/Analyses/Basecall_2D_000/Summary/basecall_1d_complement"
+    return f5connection[path].attrs["mean_qscore"]
+
+def get_seq_len(f5connection, readtype):
+    '''readtpye in 2d, template, complement'''
+    if readtype == "2d":
+        path="/Analyses/Basecall_2D_000/Summary/basecall_2d"
+    elif readtype == "template":
+        path="/Analyses/Basecall_2D_000/Summary/basecall_1d_template"
+    elif readtype == "complement":
+        path="/Analyses/Basecall_2D_000/Summary/basecall_1d_complement"
+    return f5connection[path].attrs["sequence_length"]
+
+def has_complement(f5connection):
+    try:
+        f5connection["/Analyses/Basecall_2D_000/BaseCalled_complement"]
+        return True
+    except KeyError:
+        return False
+
+
+def get_num_events(f5connection, eventstype):
+    '''Assumes exists'''
+    '''eventstpye in 2d, template, complement'''
+    if eventstype == "input":
+        path="/Analyses/Basecall_2D_000/Summary/split_hairpin"
+    elif eventstype == "template":
+        path="/Analyses/Basecall_2D_000/Summary/basecall_1d_template"
+    elif eventstype == "complement":
+        path="/Analyses/Basecall_2D_000/Summary/basecall_1d_complement"
+    try:
+        return f5connection[path].attrs["num_events"]
+    except KeyError:
+        return None
+
+def get_num_called_events(f5, eventstype):
+    '''Assumes exists'''
+    '''eventstpye in template, complement (no input)'''
+    if eventstype == "template":
+        return f5['/Analyses/Basecall_2D_000/Summary/basecall_1d_template'].attrs['called_events']
+    elif eventstype == "complement":
+        return f5['/Analyses/Basecall_2D_000/Summary/basecall_1d_complement'].attrs['called_events']
+    
+
+def get_num_skips(f5, eventstype):
+    '''Assumes exists'''
+    '''eventstpye in template, complement (no input)'''
+    if eventstype == "template":
+        return f5['/Analyses/Basecall_2D_000/Summary/basecall_1d_template'].attrs['num_skips']
+    elif eventstype == "complement":
+        return f5['/Analyses/Basecall_2D_000/Summary/basecall_1d_complement'].attrs['num_skips']
+
+def get_num_stays(f5, eventstype):
+    '''Assumes exists'''
+    '''eventstpye in template, complement (no input)'''
+    if eventstype == "template":
+        return f5['/Analyses/Basecall_2D_000/Summary/basecall_1d_template'].attrs['num_stays']
+    elif eventstype == "complement":
+        return f5['/Analyses/Basecall_2D_000/Summary/basecall_1d_complement'].attrs['num_stays']
+
+def get_strand_score(f5, eventstype):
+    '''Assumes exists'''
+    '''eventstpye in template, complement (no input)'''
+    if eventstype == "template":
+        return f5['/Analyses/Basecall_2D_000/Summary/basecall_1d_template'].attrs['strand_score']
+    elif eventstype == "complement":
+        return f5['/Analyses/Basecall_2D_000/Summary/basecall_1d_complement'].attrs['strand_score']
+
+def get_num_stutters(f5, eventstype):
+    '''Assumes exists'''
+    '''eventstpye in template, complement (no input)'''
+    try:
+        if eventstype == "template":
+            return f5['/Analyses/Basecall_2D_000/Summary/post_process_template'].attrs['num_stutters_found']
+        elif eventstype == "complement":
+            return f5['/Analyses/Basecall_2D_000/Summary/post_process_complement'].attrs['num_stutters_found']
+    except: ##numstutters only in newer fast5s
+        logger.info(get_basename(f5) + " does not have the 'post_process_" + eventstype + " groups")
+        return "-"
+
+def get_channel_number(f5):
+    return f5['/UniqueGlobalKey/channel_id'].attrs['channel_number']
+
+def get_heatsink_temp(f5):
+    return f5['/UniqueGlobalKey/tracking_id'].attrs['heatsink_temp'] 
+
 
 def get_minknow_version(f5):
     return f5['/UniqueGlobalKey/tracking_id'].attrs["version_name"]
@@ -15,12 +119,14 @@ def get_min_max_ratio(f5):
 def get_model_type(f5):
     return f5['/Analyses/Basecall_2D_000/Configuration/general'].attrs['model_type']
 
-def get_basename(f5): ## this is also in fragstats
-    return f5['/Analyses/Basecall_2D_000/Configuration/general'].attrs['basename']
+
+def get_basename(f5):
+    return f5["/Analyses/Basecall_2D_000/Configuration/general"].attrs["basename"]
 
 def get_sequence(f5, seqtype):
     ''' f5: f5connection
         seqtype: template, complement, 2d'''
+    pass
     
 
 def run_get_attributes(f5file):

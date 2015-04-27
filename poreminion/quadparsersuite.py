@@ -109,9 +109,6 @@ def get_regex_count_in_fast5_fasta(fast5fasta, regex):
 def get_regex_counts_in_fast5(fast5, regex, regex2=None):
     ## regex and regex2 are re.compile(string) objects
     ## often regex2 is the complement of regex (not necessary though)
-##    twoD = fast5.get_fastas("2D")
-##    template = fast5.get_fastas("fwd")
-##    complement = fast5.get_fastas("rev")
     twoD = fast5.fastas.get("twodirections")
     template = fast5.fastas.get("template")
     complement = fast5.fastas.get("complement")

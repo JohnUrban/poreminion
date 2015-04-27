@@ -1,6 +1,7 @@
 import sys
 import h5py
 import numpy as np
+from info import *
 
 # raw files:            start, length, mean, var
 # base called files:    mean, stddev, start, length
@@ -9,12 +10,7 @@ import numpy as np
 # need to interpret which filetype reading and print out in basecalled format
 
 
-def is_basecalled(f5):
-    try:
-        f5['/Analyses/Basecall_2D_000']
-        return True
-    except KeyError:
-        return False
+
 
 def get_input_events(f5, basecalled):
     # note: can 0 out start times by subtracting this value: /Analyses/EventDetection_000/Reads/Read_#/start_time
@@ -138,5 +134,37 @@ def store_complement_events(f5, basecalled, getbasecallinfo=True):
     else:
         getbasecallinfo=False
         pass
-                
 
+
+def reconstruct_sequence_from_stranded_events(events):
+    ## assumes events are stranded/base-called
+    length = len(events['mean'])
+    seq = events['model_state'][0]
+    for i in range(1,length):
+        if events['move'][i] > 0:
+            print events['move'][i] 
+            seq += events['model_state'][i][5-int(events['move'][i]):]
+    return seq
+
+def model_state_start_index_of_stranded_events(events):
+    ## assumes events are stranded/base-called
+    ## returns updated events dict with seqindex key:value pairs
+    length = len(events['mean'])
+    events['seqindex'] = [0]
+    for i in range(1,length):
+        events['seqindex'].append(events['seqindex'][-1]+int(events['move'][i]))
+    return events
+
+
+def stay_locations_BED(events, name):
+    ## assumes events are stranded/base-called
+    ## prints BED entries of locations of 5mers that have move=0
+    ## it will print same location as many times as there are stays at it
+    ## by default position 0 is move 0 but is not a "stay", so start at 1
+    length = len(events['mean'])
+    index = 0
+    for i in range(1,length):
+        if events['move'][i] == 0:
+            print ("\t").join([name, str(index), str(index+5)])
+        else:
+            index += int(events['move'][i])

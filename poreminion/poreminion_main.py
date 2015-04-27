@@ -33,6 +33,8 @@ def run_subtool(parser, args):
         import numevents as submodule
     elif args.command == 'events':
         import get_events as submodule
+    elif args.command == 'staypos':
+        import staypos as submodule
     elif args.command == 'info':
         import info as submodule
     elif args.command == 'g4' or args.command == 'regex':
@@ -375,6 +377,16 @@ One can raise the sensitivity (while lowering the specificity), for example, by 
     
     parser_get_events.set_defaults(func=run_subtool)
 
+
+    ##########
+    # staypositions
+    ##########
+
+    parser_staypos= subparsers.add_parser('staypos',
+                                        help='''Get BED output of stay positions in read(s). ''')
+    parser_staypos.add_argument('files', metavar='FILES', nargs='+',
+                               help='The input FAST5 files.')
+    parser_staypos.set_defaults(func=run_subtool)
 
 
     ##########

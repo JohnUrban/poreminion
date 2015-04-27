@@ -1,3 +1,12 @@
+0.4.1 -- April 27, 2015
+Added subcommands:
+- staypos: BED file type output of where stays (move = 0) are in template and complement sequences (by mapping moves to appropriate sequence index)
+
+Updated:
+- some of the under-the-hood: e.g. a lot of functions moved to info.py from other files to help avoid import conflicts
+
+
+
 0.4.0
 Added subcommands:
 - regex: look for regular expressions in minION reads

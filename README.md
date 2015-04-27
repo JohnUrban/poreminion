@@ -1,6 +1,5 @@
-poreminion - 0.3.2
+poreminion - 0.4.0
 ==========
-NOTE: I have disabled the parallel aspect of fragstats for now as it didnt end up working and will require some restructuring.
 
 Additional tools for analyzing Oxford Nanopore minION data (built on top of poretools) by John Urban.
 
@@ -28,10 +27,10 @@ Tools:
                         16 = heat sink temperature while molecule traversed
                         17 = num called template events (after events pruned during base-calling)
                         18 = num called complement events (after events pruned during base-calling)
-                        19 = num skips in template
-                        20 = num skips in complement
-                        21 = num stays in template
-                        22 = num stays in complement
+                        19 = num skips in template (is actually number 0 moves found in extensive analysis)
+                        20 = num skips in complement (is actually number 0 moves found in extensive analysis)
+                        21 = num stays in template (is actually number 2 moves found in extensive analysis, any 3,4,5 moves not counted here)
+                        22 = num stays in complement (is actually number 2 moves found in extensive analysis, any 3,4,5 moves not counted here)
                         23 = strand score template
                         24 = strand score complement
                         25 = num stutters in template
@@ -49,8 +48,17 @@ Tools:
                         35-40 = num temp events with 0,1,2,3,4,5 moves from base-caller,
                         41-46 = num comp events with 0,1,2,3,4,5 moves from base caller.
                         
+                        If -g4/--quadruplex used:
+                        Final+1 = number of G4 motifs in 2D read: '([gG]{3,}\w{1,7}){3,}[gG]{3,}' 
+                        Final+2 = number of G4 motifs in template read 
+                        Final+3 = number of G4 motifs in complement read
+                        Final+4 = number of G4 complement motifs in 2D reads: '([cC]{3,}\w{1,7}){3,}[cC]{3,}'
+                        Final+5 = number of G4 complement motifs in template read (i.e. inferred complement strand count given template read)
+                        Final+6 = number of G4 complement motifs in complement read (i.e. inferred template strand count given complement read)
+                        
                         If --checktime used:
-                        Final column = 0 or 1 for no/yes there is a time error present.
+                        Final column (after even G4 info) = 0 or 1 for no/yes there is a time error present.
+                        
                         
                         Estimates molecule/fragment size in the following way.
                         If has 2D, molecule size is the length of 2D read.
@@ -68,6 +76,34 @@ Tools:
     numevents           Print 2 column list of file and number of input events in file.
     events              Look at events inside raw and basecalled fast5 files. 
     info                Get info about run and, if file is basecalled, basecalling. 
+    g4                  Use quadparser suite (for identifying G4 motifs) on set of fast5 files (or in a FASTA/FASTQ file) and get a BED file with info for each match.
+                            The default parameters search for '([gG]{3,}\w{1,7}){3,}[gG]{3,}' and its complement '([cC]{3,}\w{1,7}){3,}[cC]{3,}'.
+                            See: http://en.wikipedia.org/wiki/G-quadruplex#Quadruplex_prediction_techniques
+                            
+                            This automates the regex sub-command to search for G4s with given paramters.
+                            See regex for more info on output and searching for any regular expression.
+                                
+    regex               Search sequences in set of fast5 files (or in a FASTA/FASTQ file) for a regular expression.
+                            Output BED file has default columns:
+                            1. Name of sequence 
+                        
+                            2. Start of the match 
+                        
+                            3. End of the match
+                            4. Strand (+/- relative to sequence given, NOT to be confised with template/complement reads.)
+                            5. Optional Matched sequence (--reportseq/-s)
+                        
+                            These can be changed with --outformat/-o which allows you to report name,start,end,strand,seq in any order.
+                        
+                            If --counts is used, default columns are:
+                            1. name
+                            2. pos strand count
+                            3. neg strand count
+                            4. total count
+                            
+                            This script will write out all positive strand entries of a given sequence followed by all negative strand entries.
+                            If name,start,end are used as first 3 columns, sortBed from BEDtools (or unix sort) can sort the BED file based on coordinates if needed.
+                            
     dataconc            Plot sum of read lengths in each bin for a given set of bins for a set of FAST5 files.
                         This is the type of plot seen in MinKNOW while sequencing.
     qualpos             Get the qual score distribution over positions in reads
@@ -77,7 +113,8 @@ Tools:
     kmerplot            Plot kmer counts in reads or reference.
     kmerdiff            Get fold-enrichment values of kmers in reads vs reference.
     winner              Get the longest read from a set of FAST5 files.
-                        Similar to poretools winner, only allows type=each and offers a details only option.                        
+                        Similar to poretools winner, only allows type=each and offers a details only option.
+
 
 Requirements
 ==========
@@ -97,8 +134,6 @@ h5py >= 2.0
 pandas >= 0.14.1
 
 matplotlib >= 1.4.0
-
-joblib >= 0.8.4 (used in fragstats)
 
 edgeR (only for kmer 'differential expression' analysis)
 
@@ -129,4 +164,3 @@ pip install pandas
 
 pip install matplotlib
 
-pip install joblib

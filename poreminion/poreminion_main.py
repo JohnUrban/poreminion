@@ -35,6 +35,8 @@ def run_subtool(parser, args):
         import get_events as submodule
     elif args.command == 'info':
         import info as submodule
+    elif args.command == 'g4' or args.command == 'regex':
+        import quadparsersuite as submodule
     elif args.command == 'dataconc':
         import dataconc as submodule
     elif args.command == 'qualpos':
@@ -52,7 +54,6 @@ def run_subtool(parser, args):
     elif args.command == 'qualdist':
         import qualdist as submodule
 
-
     # run the chosen submodule.
     submodule.run(parser, args)
 
@@ -69,7 +70,7 @@ def main():
     #########################################
     # create the top-level parser
     #########################################
-    parser = argparse.ArgumentParser(prog='poreminion', formatter_class=argparse.RawTextHelpFormatter)#ArgumentDefaultsHelpFormatter)
+    parser = argparse.ArgumentParser(prog='poreminion',  description=""" Poreminion - additional tools for analyzing nanopore sequencing data.""", formatter_class=argparse.RawTextHelpFormatter)#ArgumentDefaultsHelpFormatter)
     parser.add_argument("-v", "--version", help="Installed poreminion version",
                         action="version",
                         version="%(prog)s " + str(poreminion.version.__version__))
@@ -169,8 +170,17 @@ If --extensive used:
 35-40 = num temp events with 0,1,2,3,4,5 moves from base-caller,
 41-46 = num comp events with 0,1,2,3,4,5 moves from base caller.
 
+If -g4/--quadruplex used:
+Final+1 = number of G4 motifs in 2D read: '([gG]{3,}\w{1,7}){3,}[gG]{3,}' 
+Final+2 = number of G4 motifs in template read 
+Final+3 = number of G4 motifs in complement read
+Final+4 = number of G4 complement motifs in 2D reads: '([cC]{3,}\w{1,7}){3,}[cC]{3,}'
+Final+5 = number of G4 complement motifs in template read (i.e. inferred complement strand count given template read)
+Final+6 = number of G4 complement motifs in complement read (i.e. inferred template strand count given complement read)
+
 If --checktime used:
-Final column = 0 or 1 for no/yes there is a time error present.
+Final column (after even G4 info) = 0 or 1 for no/yes there is a time error present.
+
 
 Estimates molecule/fragment size in the following way.
 If has 2D, molecule size is the length of 2D read.
@@ -187,15 +197,41 @@ From the molecule sizes, the "Molecule N50" can be computed using the nx subcomm
                                     19=mean duration across all events, 20=median duration across all events, 21=sd of all event durations, 22=min event duration, 23=max event duration,
                                     24-29=num temp events with 0,1,2,3,4,5 moves from base-caller, 20-35=num comp events with 0,1,2,3,4,5 moves from base caller.
                                     ''')
+
+    parser_fragstats.add_argument('--quadruplex', "-g4",
+                               action="store_true", required=False, default=False,
+                              help='''This tacks on info to end (but before checktime if used) about G4 motifs for available read types in each file.
+When a read type not available "-" is given.
+Analyzing the 2D read likely gives best estimate of counts in template and complement strands.
+Analyzing the template strand also gives an inferred count of complement strand given the template sequence and vice versa.
+Similar counts between inferred complement (given template) and complement (or inferred template vs template) is only possible when they are similar lengths.
+The G4 regular expression is pretty robust to indels and mismatches, especially in the loops/spacer parts of motif.
+The poreminion g4 subcommand allows a lot more flexibility in the motif.
+For example, one can raise the sensitivity by lowering the minimum poly-G tract length from 3 to 2 and/or raising the maximum loop length from 7 to 15.
+''')
+
+    parser_fragstats.add_argument('--g4motif', "-g4m",
+                               type=str, required=False, default="3,7",
+                              help='''If specifying -g4, this optional flag (-g4m) allows more flexibility in the G4 motif used.
+Use: -g4m minG,maxN -- default: -g4m 3,7.
+MinG is minimum number of Gs allowed in poly-G tracts of G4 motifs.
+MaxN is maximum number of nucleotides allowed in spacer/loop parts of G4 motif.
+
+Default parameters (3,7) give the standard G4 motif (and its complement): '([gG]{3,}\w{1,7}){3,}[gG]{3,}'. 
+One can raise the sensitivity (while lowering the specificity), for example, by lowering the minimum poly-G tract length from 3 to 2 and/or raising the maximum loop length from 7 to 15.
+''')
+
+    
     parser_fragstats.add_argument('--checktime', "-t",
                                action="store_true", required=False, default=False,
                               help='''This tacks on timetest info (search for time errors in start times) as the last field
                                     --> 0 or 1 for no/yes there is a time error present. Adds considerable computation time.
                                     If used with --extensive, will take even more time than that alone.''')
+    
 
-    parser_fragstats.add_argument('--parallel', "-p",
-                               type=int, required=False, default=1,
-                              help='''Parallelize (New) - provide integer. Default: 1. Notes: No need to go higher than 1 for small jobs. Higher than 1 may not work on regular mac book pros, but does work on Oscar, Brown University' super computing cluster..''')
+##    parser_fragstats.add_argument('--parallel', "-p",
+##                               type=int, required=False, default=1,
+##                              help='''Parallelize (New) - provide integer. Default: 1. Notes: No need to go higher than 1 for small jobs. Higher than 1 may not work on regular mac book pros, but does work on Oscar, Brown University' super computing cluster..''')
 
     parser_fragstats.add_argument('files', metavar='FILES', nargs='+',
                                help='The input FAST5 files.')
@@ -354,6 +390,177 @@ From the molecule sizes, the "Molecule N50" can be computed using the nx subcomm
     parser_info.set_defaults(func=run_subtool)
 
 
+    ##########
+    # G4 - quadparsersuite - G4
+    ##########
+    parser_g4 = subparsers.add_parser('g4',
+                                      help='''Use quadparser suite (for identifying G4 motifs) on set of fast5 files (or in a FASTA/FASTQ file) and get a BED file with info for each match.
+    The default parameters search for '([gG]{3,}\w{1,7}){3,}[gG]{3,}' and its complement '([cC]{3,}\w{1,7}){3,}[cC]{3,}'.
+    See: http://en.wikipedia.org/wiki/G-quadruplex#Quadruplex_prediction_techniques
+    
+    This automates the regex sub-command to search for G4s with given paramters.
+    See regex for more info on output and searching for any regular expression.
+        
+''')
+
+    parser_g4_file_type = parser_g4.add_mutually_exclusive_group(required=True)
+    parser_g4_file_type.add_argument('--fast5', '-f5', type=str,
+                               help='''Path to the directory with input FAST5 files.
+This, like most poreminion tools, just requires the path to the dir with all fast5 files.
+However, unlike most poreminion tools, it requires the -f5 flag to be specified.''')
+    parser_g4_file_type.add_argument('--fasta', '-fa', type=str,
+                               help='''Path to the single input FASTA file containing one or more sequences.
+FASTA files can be piped in to stdin by using "-". e.g. poretools fasta fast5dir/ | poreminion g4 -fa -''')
+    parser_g4_file_type.add_argument('--fastq', '-fq', type=str,
+                               help='''Path to the single input FASTQ file containing one or more sequences.
+FASTQ files can be piped in to stdin by using "-". e.g. poretools fastq fast5dir/ | poreminion g4 -fq -''')
+
+    parser_g4.add_argument('--minG', '-g',
+                   type= int,
+                   help='''minG is the minimum number of Gs in a G tract.
+A G4 is typically defined as: ([gG]{3}\w{1,7}){3,}[gG]{3}
+As such, the default minG value is 3.
+This is typically the shortest allowable G-tract, but 2 is used in some cases to increase sensitivity.
+Requiring longer G-tracts has more specificity, but lower sensitivity.
+                   ''',
+                   default=3)
+
+    parser_g4.add_argument('--maxN', '-n',
+                   type= int,
+                   help='''maxN is the maximum number of number of Ns in loops between G tracts.
+A G4 is typically defined as: ([gG]{3,}\w{1,7}){3,}[gG]{3,}
+As such, the default maxN value is 7.
+Recently people have also often used maxN=15 -- i.e. ([gG]{3,}\w{1,15}){3,}[gG]{3,}
+In general, allowing longer loops have more sensitivity, but lower specificity.
+Some literature suggests that the probability of forming a G4 decreases with length.
+                   ''',
+                   default=7)
+
+
+    parser_g4.add_argument('--noreverse',
+                   action= 'store_true',
+                   help='''Do not search the complement G4 regular expression (e.g. ([cC]{3,}\w{1,7}){3,}[cC]{3,} ) in the given sequences.
+In each sequence, search only for G4s on the given strand using the G4 regex -- e.g. ([gG]{3,}\w{1,7}){3,}[gG]{3,}.
+Note: this does NOT mean to search only template reads for G4s and it does NOT mean complement reads are ignored.
+It means for all reads, only pay attention to the read sequence, not the inferred reverse complement of that sequence.
+                   ''')
+    parser_g4.add_argument('--reportseq', '-s',
+                    action= 'store_true', default=False,
+                    help='''Report sequence of reg exp match in output.                                   
+                   ''')
+    parser_g4.add_argument('--outformat', '-o',
+                    type=str, default='name,start,end,strand',
+                    help='''Provide comma-separated list of desired output infomation.
+Options are name (sequence name), start (start of match), end (end of match),
+strand (strand of match +/-), seq (sequence of match).
+Default = 'name,start,end,strand'. --reportSeq/-s option changes default to: 'name,start,end,strand,seq'
+Any other combination can be provided.
+When using --counts, defaults to name,pos,neg
+                   ''')
+
+    parser_g4.add_argument('--counts', '-c',
+                    action= 'store_true', default=False,
+                    help='''Report count for number of matches in each sequence instead of individually reporting all occurences in the sequence. 
+                   ''')
+
+    parser_g4.add_argument('--type',
+                              dest='type',
+                              metavar='STRING',
+                              choices=['all', 'fwd', 'rev', '2D', 'fwd,rev'],
+                              default='all',
+                              help='Only relevant with -f5. Which type of reads should be analyzed? Default: all. choices=[all, fwd, rev, 2D, fwd,rev]')
+
+
+    parser_g4.set_defaults(func=run_subtool)
+
+    ##########
+    # regex
+    ##########
+    parser_regex = subparsers.add_parser('regex', description="""Regular Expressions. See following site for help in constructing a useful regex: https://docs.python.org/2/library/re.html""",
+                                      help='''Search sequences in set of fast5 files (or in a FASTA/FASTQ file) for a regular expression.
+    Output BED file has default columns:
+    1. Name of sequence \n
+    2. Start of the match \n
+    3. End of the match
+    4. Strand (+/- relative to sequence given, NOT to be confised with template/complement reads.)
+    5. Optional Matched sequence (--reportseq/-s)
+
+    These can be changed with --outformat/-o which allows you to report name,start,end,strand,seq in any order.
+
+    If --counts is used, default columns are:
+    1. name
+    2. pos strand count
+    3. neg strand count
+    4. total count
+    
+    This script will write out all positive strand entries of a given sequence followed by all negative strand entries.
+    If name,start,end are used as first 3 columns, sortBed from BEDtools (or unix sort) can sort the BED file based on coordinates if needed.
+    ''')
+    parser_regex_file_type = parser_regex.add_mutually_exclusive_group(required=True)
+    parser_regex_file_type.add_argument('--fast5', '-f5', type=str,
+                               help='''Path to the directory with input FAST5 files.
+This, like most poreminion tools, just requires the path to the dir with all fast5 files.
+However, unlike most poreminion tools, it requires the -f5 flag to be specified.''')
+    parser_regex_file_type.add_argument('--fasta', '-fa', type=str,
+                               help='''Path to the single input FASTA file containing one or more sequences.
+FASTA files can be piped in to stdin by using "-". e.g. poretools fasta fast5dir/ | poreminion regex -fa - -r "regex"''')
+    parser_regex_file_type.add_argument('--fastq', '-fq', type=str,
+                               help='''Path to the single input FASTQ file containing one or more sequences.
+FASTQ files can be piped in to stdin by using "-". e.g. poretools fastq fast5dir/ | poreminion regex -fq - -r "regex"''')
+    
+    parser_regex.add_argument('--regex', '-r',
+                   type= str, default=None, required=True,
+                   help='''Required: Regex to be searched in the fasta input.
+Matches to this regex will have + strand. This string passed to python
+re.compile().                                 
+                   ''')
+
+    parser_regex.add_argument('--regexrev', '-R',
+                   type= str, default=None, required=False,
+                   help='''The second regex to be searched in fasta input.
+Matches to this regex will have - strand.
+By default (None), --regexrev will be --regex complemented by replacing
+'actguACTGU' with 'tgacaTGACA'.                                    
+                   ''')
+    
+    parser_regex.add_argument('--noreverse',
+                   action= 'store_true',
+                   help='''Do not search for any complement regular expression in the given sequences.
+In each sequence, search only for regex given on the given strand.
+Note: this does NOT mean to search only template reads for regex and it does NOT mean complement reads are ignored.
+It means for all reads, only pay attention to the read sequence, not the inferred reverse complement of that sequence.
+                   ''')
+    
+    parser_regex.add_argument('--reportseq', '-s',
+                    action= 'store_true', default=False,
+                    help='''Report sequence of reg exp match in output.                                   
+                   ''')
+    
+    parser_regex.add_argument('--outformat', '-o',
+                    type=str, default='name,start,end,strand',
+                    help='''Provide comma-separated list of desired output infomation.
+Options are name (sequence name), start (start of match), end (end of match),
+strand (strand of match +/-), seq (sequence of match).
+Default = 'name,start,end,strand'. --reportSeq/-s option changes default to: 'name,start,end,strand,seq'
+Any other combination can be provided.
+When using --counts, defaults to name,pos,neg
+                   ''')
+
+    parser_regex.add_argument('--counts', '-c',
+                    action= 'store_true', default=False,
+                    help='''Report count for number of matches in each sequence instead of individually reporting all occurences in the sequence. 
+                   ''')
+
+    parser_regex.add_argument('--type',
+                              dest='type',
+                              metavar='STRING',
+                              choices=['all', 'fwd', 'rev', '2D', 'fwd,rev'],
+                              default='all',
+                              help='Only relevant with -f5. Which type of reads should be analyzed? Default: all. choices=[all, fwd, rev, 2D, fwd,rev]')
+
+
+    
+    parser_regex.set_defaults(func=run_subtool)    
 
     ##########
     # data_conc (data concentration plot)
@@ -817,5 +1024,19 @@ Similar to poretools winner, only allows type=each and offers a details only opt
          if e.errno != 32:  # ignore SIGPIPE
              raise
 
+
+    
 if __name__ == "__main__":
     main()
+    ## Would have to parellize from here....
+##    from joblib import Parallel, delayed
+##    import time
+##    from glob import glob
+##    folder = "del"
+##    files = glob('{}/*.txt'.format(folder))
+##    def shit(f):
+##        print f
+##        time.sleep(0.001)
+##    ##    for f in files:
+##    ##        shit(f) #args.parallel
+##    Parallel(n_jobs=2)(delayed(shit)(f) for f in files)

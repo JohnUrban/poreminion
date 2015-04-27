@@ -2,6 +2,10 @@ import h5py
 from events_tools_pm import *
 from fragstats import has_complement
 
+## TODO 4-23-15: Add column to index each event following move structure
+##  i.e. match the event/5mer to the same 5mer position in output sequence.
+##  
+
 def run(parser, args):
     f5 = h5py.File(args.fast5)
     if args.raw:

@@ -18,7 +18,7 @@ setup(
         requires = ['python (>=2.7, <3.0)'],
         packages=['poreminion',
                   'poreminion.scripts'],
-        author="John Urban (poreminion); Nick Loman and Aaron Quinlan (poretools)",
+        author="John Urban (poreminion)",
         description='Additional tools on top of poretools for working with nanopore sequencing data',
         long_description=long_description,
         url="https://github.com/JohnUrban/poreminion",

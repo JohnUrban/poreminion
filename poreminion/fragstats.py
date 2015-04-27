@@ -5,7 +5,9 @@ import numpy as np
 from findTimeErrors import has_time_error, has_time_error_list
 import pandas
 from nX import NX
-from joblib import Parallel, delayed ## parallelize 0.3.2
+from quadparsersuite import *
+##from joblib import Parallel, delayed ## parallelize 0.3.2
+
 #logging
 import logging
 logger = logging.getLogger('poreminion')
@@ -319,12 +321,20 @@ def plot_fragstats():
 
 def frag_fxn(fast5, args):
     fragstats = get_frag_stats(fast5)
+    if args.quadruplex:
+        minG, maxN = (int(e) for e in args.g4motif.split(","))
+        regex = re.compile(get_g4_regex(minG, maxN))
+        revregex = re.compile(get_g4_revregex(minG, maxN))
     if args.extensive:
         hascomp = has_complement(fast5.hdf5file)
+        if args.quadruplex:
+            fragstats += get_regex_counts_in_fast5(fast5, regex, revregex)
         if args.checktime:
             fragstats += get_more_fragstats(fast5.hdf5file, hascomp = hascomp, check_time = True)
         else:
             fragstats += get_more_fragstats(fast5.hdf5file, hascomp = hascomp, check_time = False)
+    if not args.extensive and args.quadruplex:
+        fragstats += get_regex_counts_in_fast5(fast5, regex, revregex)
     if not args.extensive and args.checktime:
         input_events = store_input_events(fast5.hdf5file, basecalled)
         fragstats += [int(has_time_error_list(input_events['start']))]

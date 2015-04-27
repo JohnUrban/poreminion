@@ -15,6 +15,13 @@ def get_min_max_ratio(f5):
 def get_model_type(f5):
     return f5['/Analyses/Basecall_2D_000/Configuration/general'].attrs['model_type']
 
+def get_basename(f5): ## this is also in fragstats
+    return f5['/Analyses/Basecall_2D_000/Configuration/general'].attrs['basename']
+
+def get_sequence(f5, seqtype):
+    ''' f5: f5connection
+        seqtype: template, complement, 2d'''
+    
 
 def run_get_attributes(f5file):
     script = os.path.join(poreminion.scripts.__path__[0], 'getAttributes.sh')

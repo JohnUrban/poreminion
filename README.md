@@ -1,7 +1,7 @@
 poreminion - 0.4.0
 ==========
 
-Additional tools for analyzing Oxford Nanopore minION data (built on top of poretools) by John Urban.
+Additional tools for analyzing Oxford Nanopore minION data by John Urban. 
 
 Tools:
 

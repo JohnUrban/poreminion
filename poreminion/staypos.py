@@ -15,6 +15,7 @@ def staypos_fxn(f5, args):
         stay_locations_BED(events, name+"complement")
 
 
+
 def run(parser, args):
     for fast5 in Fast5FileSet(args.files):
         f5 = fast5.hdf5file

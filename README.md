@@ -1,4 +1,4 @@
-poreminion - 0.4.1
+poreminion - 0.4.2
 ==========
 
 Additional tools for analyzing Oxford Nanopore minION data by John Urban. 
@@ -115,6 +115,9 @@ Tools:
     kmerdiff            Get fold-enrichment values of kmers in reads vs reference.
     winner              Get the longest read from a set of FAST5 files.
                         Similar to poretools winner, only allows type=each and offers a details only option.
+    seqlen              Get sequence lengths from set of FAST5 files.
+                        By default it will attempt to give read lengths for template, complement, and 2d.
+                        Use optional flags to exclude any of these read types.
 
 
 Requirements

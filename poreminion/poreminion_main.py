@@ -39,6 +39,8 @@ def run_subtool(parser, args):
         import info as submodule
     elif args.command == 'g4' or args.command == 'regex':
         import quadparsersuite as submodule
+    elif args.command == 'seqlen':
+        import seqlen as submodule
     elif args.command == 'dataconc':
         import dataconc as submodule
     elif args.command == 'qualpos':
@@ -949,6 +951,28 @@ Similar to poretools winner, only allows type=each and offers a details only opt
     parser_winner.set_defaults(func=run_subtool)
 
 
+    ##########
+    # seqlen
+    ##########
+    parser_seqlen = subparsers.add_parser('seqlen',
+                                        help='''Get sequence lengths from set of FAST5 files.
+By default it will attempt to give read lengths for template, complement, and 2d.
+Use optional flags to exclude any of these read types. ''')
+    parser_seqlen.add_argument('files', metavar='FILES', nargs='+',
+                               help='The input FAST5 files.')
+    parser_seqlen.add_argument('--not2d',
+                               action="store_true",
+                              default=False,
+                              help='Exclude 2d read lengths.')
+    parser_seqlen.add_argument('--nottemp',
+                               action="store_true",
+                              default=False,
+                              help='Exclude template read lengths.')
+    parser_seqlen.add_argument('--notcomp',
+                               action="store_true",
+                              default=False,
+                              help='Exclude complement read lengths.')
+    parser_seqlen.set_defaults(func=run_subtool)
 
     ##########
 ##    # viz time

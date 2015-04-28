@@ -1,3 +1,9 @@
+0.4.2 -- April 28, 2015
+Added subcommand:
+- seqlen: print seqname,seqlen for chosen read types in set of fast5 files.
+
+
+
 0.4.1 -- April 27, 2015
 Added subcommands:
 - staypos: BED file type output of where stays (move = 0) are in template and complement sequences (by mapping moves to appropriate sequence index)

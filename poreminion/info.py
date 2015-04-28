@@ -33,6 +33,22 @@ def get_seq_len(f5connection, readtype):
         path="/Analyses/Basecall_2D_000/Summary/basecall_1d_complement"
     return f5connection[path].attrs["sequence_length"]
 
+
+def print_seq_name_and_length(f5, gettemp=True, getcomp=True, get2d=True):
+    ## seq name in format of g4 seq names as well as staypos seqnames
+    ## assumes basecalled
+    ## f5 is hdf5 file connection
+    name = get_basename(f5)
+    if name.endswith("_strand"):
+        name = name[:-6]
+    if gettemp:
+        print name + "template\t" + str(get_seq_len(f5, readtype="template"))
+    if has_complement(f5):
+        if getcomp:
+            print name + "complement\t" + str(get_seq_len(f5, readtype="complement"))
+        if has_2d(f5) and get2d:
+            print name + "2D\t" + str(get_seq_len(f5, readtype="2d"))
+
 def has_complement(f5connection):
     try:
         f5connection["/Analyses/Basecall_2D_000/BaseCalled_complement"]
@@ -40,6 +56,12 @@ def has_complement(f5connection):
     except KeyError:
         return False
 
+def has_2d(f5connection):
+    try:
+        f5connection["/Analyses/Basecall_2D_000/BaseCalled_2D"]
+        return True
+    except KeyError:
+        return False
 
 def get_num_events(f5connection, eventstype):
     '''Assumes exists'''

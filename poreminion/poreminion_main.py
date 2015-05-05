@@ -472,6 +472,10 @@ Any other combination can be provided.
 When using --counts, defaults to name,pos,neg
                    ''')
 
+    parser_g4.add_argument('--numtracts', '-t',
+                    action= 'store_true', default=False,
+                    help='''For each G4 location, also report number of poly-G tracts inside G4 motif (and poly-C tracts in G4 complement motif). 
+                   ''')
     parser_g4.add_argument('--counts', '-c',
                     action= 'store_true', default=False,
                     help='''Report count for number of matches in each sequence instead of individually reporting all occurences in the sequence. 

@@ -14,16 +14,22 @@ from poretools.Fast5File import *
 from info import get_basename
 from cStringIO import StringIO
 
-def parseSequence(seq, seq_name, fwd_re, rev_re, outformat, noreverse=False):
+def parseSequence(seq, seq_name, fwd_re, rev_re, outformat, count_gtract=False, noreverse=False):
+    '''if count_gtract is not False, it should be an int > 1'''
     for m in re.finditer(fwd_re, seq):
         formatDict = {'name':seq_name, 'start':m.start(), 'end':m.end(), 'strand':'+', 'seq':m.group(0)}
+        if count_gtract:
+            formatDict['gtracts'] = get_regex_count(formatDict['seq'], re.compile("[gG]{"+str(count_gtract)+",}"))
         print '\t'.join(str(x) for x in [formatDict[e] for e in outformat.split(',')])
     if noreverse is False:
         for m in re.finditer(rev_re, seq):
             formatDict = {'name':seq_name, 'start':m.start(), 'end':m.end(), 'strand':'-', 'seq':m.group(0)}
+            if count_gtract:
+                formatDict['gtracts'] = get_regex_count(formatDict['seq'], re.compile("[cC]{"+str(count_gtract)+",}"))
             print '\t'.join(str(x) for x in [formatDict[e] for e in outformat.split(',')])
 
-def countSequence(seq, seq_name, fwd_re, rev_re, outformat, noreverse=False):
+def countSequence(seq, seq_name, fwd_re, rev_re, outformat, count_gtract=False, noreverse=False):
+    ##count_gtract is not useful for this function for now, but needed to add it to play nice with other functions
     poscount = 0
     negcount = 0
     for m in re.finditer(fwd_re, seq):
@@ -34,7 +40,8 @@ def countSequence(seq, seq_name, fwd_re, rev_re, outformat, noreverse=False):
     formatDict = {'name':seq_name, 'pos':poscount, 'neg':negcount}
     print '\t'.join(str(x) for x in [formatDict[e] for e in outformat.split(',')])
     
-def parseFasta(seq_fh, re_f, re_r, function, outformat, noreverse=False):
+def parseFasta(seq_fh, re_f, re_r, function, outformat, count_gtract=False, noreverse=False):
+    '''if count_gtract is not False, it should be an int > 1'''
     seq = []
     line = (seq_fh.readline()).strip()
     seq_name = re.sub('^>', '', line)
@@ -47,7 +54,7 @@ def parseFasta(seq_fh, re_f, re_r, function, outformat, noreverse=False):
                 break
         seq = ''.join(seq)
 
-        function(seq, seq_name, fwd_re=re_f, rev_re=re_r, outformat=outformat, noreverse=noreverse)
+        function(seq=seq, seq_name=seq_name, fwd_re=re_f, rev_re=re_r, outformat=outformat, count_gtract=count_gtract, noreverse=noreverse)
         
         seq_name = re.sub('^>', '', line)
         seq= []
@@ -56,12 +63,13 @@ def parseFasta(seq_fh, re_f, re_r, function, outformat, noreverse=False):
             break
 
 
-def parseFastq(seq_fh, re_f, re_r, function, outformat, noreverse=False):
+def parseFastq(seq_fh, re_f, re_r, function, outformat, count_gtract=False, noreverse=False):
+    '''if count_gtract is not False, it should be an int > 1'''
     line = (seq_fh.readline()).strip()
     seq_name = re.sub('^@', '', line)
     seq = (seq_fh.readline()).strip()
     while True:
-        function(seq, seq_name, fwd_re=re_f, rev_re=re_r, outformat=outformat, noreverse=noreverse)
+        function(seq=seq, seq_name=seq_name, fwd_re=re_f, rev_re=re_r, outformat=outformat, count_gtract=count_gtract, noreverse=noreverse)
         seq_fh.readline() ## skip + line
         seq_fh.readline() ## skip base call quality line
         line = (seq_fh.readline()).strip()   
@@ -71,7 +79,7 @@ def parseFastq(seq_fh, re_f, re_r, function, outformat, noreverse=False):
             break
 
 
-def parseFast5(fast5dir, seqtype, re_f, re_r, function, outformat, noreverse=False):
+def parseFast5(fast5dir, seqtype, re_f, re_r, function, outformat, count_gtract=False, noreverse=False):
     for fast5 in Fast5FileSet(fast5dir):
         fas = fast5.get_fastas(seqtype)
         for fa in fas:
@@ -83,7 +91,7 @@ def parseFast5(fast5dir, seqtype, re_f, re_r, function, outformat, noreverse=Fal
                 filename = filename[:-6]
             basename = basename.split("_")[-1]
             name = filename + basename
-            function(fa.seq, name, re_f, re_r, outformat, noreverse)
+            function(seq=fa.seq, seq_name=name, fwd_re=re_f, rev_re=re_r, outformat=outformat, count_gtract=count_gtract, noreverse=noreverse)
         fast5.close()
 
 
@@ -160,9 +168,12 @@ def run(parser, args):
 
     ## process automated reporting/output format requests
     if args.reportseq:
-        args.outformat = 'name,start,end,strand,seq'
+        args.outformat = 'name,start,end,strand,seq'                                                      
     if args.counts:
         args.outformat = 'name,pos,neg'
+    if args.numtracts:
+        args.numtracts = int(args.minG)
+        args.outformat += ",gtracts"
 
     ## allow fasta and fastq files be piped in as stdin
     if args.fastx == '-':
@@ -182,10 +193,10 @@ def run(parser, args):
 
     ## execute  
     if args.fasta:
-        parseFasta(fastx_fh, re_f, re_r, function, outformat=args.outformat, noreverse=args.noreverse)
+        parseFasta(fastx_fh, re_f, re_r, function, outformat=args.outformat, count_gtract=args.numtracts, noreverse=args.noreverse)
     elif args.fastq:
-        parseFastq(fastx_fh, re_f, re_r, function, outformat=args.outformat, noreverse=args.noreverse)
+        parseFastq(fastx_fh, re_f, re_r, function, outformat=args.outformat, count_gtract=args.numtracts, noreverse=args.noreverse)
     elif args.fast5:
-        parseFast5(args.fast5, args.type, re_f, re_r, function, outformat=args.outformat, noreverse=args.noreverse)
+        parseFast5(args.fast5, args.type, re_f, re_r, function, outformat=args.outformat, count_gtract=args.numtracts, noreverse=args.noreverse)
 
 

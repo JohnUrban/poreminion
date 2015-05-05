@@ -1,3 +1,8 @@
+0.4.3 -- May 5, 2015
+Updated:
+- g4: now can count number of g-tracts inside identified g4 motif
+
+
 0.4.2 -- April 28, 2015
 Added subcommand:
 - seqlen: print seqname,seqlen for chosen read types in set of fast5 files.

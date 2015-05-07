@@ -288,18 +288,18 @@ def summarize_fragstats(fragstats_df, extensive=False, timecheck=False):
     print ("\t").join([str(e) for e in ["min_template_length", min_template_length, min_template_Q, min_template_name, "template"]])
     print ("\t").join([str(e) for e in ["max_template_length", max_template_length, max_template_Q, max_template_name, "template"]])
     print ("\t").join([str(e) for e in ["max_template_Q_ge_4_length", max_template_Q_ge_4_length, max_template_Q_ge_4_Q, max_template_Q_ge_4_name, "template"]])
-    print ("\t").join([str(e) for e in ["max_template_Q_ge_4_length", max_template_Q_ge_3_5_length, max_template_Q_ge_4_Q, max_template_Q_ge_4_name, "template"]])
-    print ("\t").join([str(e) for e in ["max_template_Q_ge_4_length", max_template_Q_ge_3_length, max_template_Q_ge_4_Q, max_template_Q_ge_4_name, "template"]])
-    print ("\t").join([str(e) for e in ["max_template_Q_ge_4_length", max_template_Q_ge_2_5_length, max_template_Q_ge_4_Q, max_template_Q_ge_4_name, "template"]])
+    print ("\t").join([str(e) for e in ["max_template_Q_ge_3.5_length", max_template_Q_ge_3_5_length, max_template_Q_ge_3_5_Q, max_template_Q_ge_3_5_name, "template"]])
+    print ("\t").join([str(e) for e in ["max_template_Q_ge_3_length", max_template_Q_ge_3_length, max_template_Q_ge_3_Q, max_template_Q_ge_3_name, "template"]])
+    print ("\t").join([str(e) for e in ["max_template_Q_ge_2.5_length", max_template_Q_ge_2_5_length, max_template_Q_ge_2_5_Q, max_template_Q_ge_2_5_name, "template"]])
     print
     
     # Complement
     print ("\t").join([str(e) for e in ["min_complement_length", min_complement_length, min_complement_Q, min_complement_name, "complement"]])
     print ("\t").join([str(e) for e in ["max_complement_length", max_complement_length, max_complement_Q, max_complement_name, "complement"]])
     print ("\t").join([str(e) for e in ["max_complement_Q_ge_4_length", max_complement_Q_ge_4_length, max_complement_Q_ge_4_Q, max_complement_Q_ge_4_name, "complement"]])
-    print ("\t").join([str(e) for e in ["max_complement_Q_ge_3.5_length", max_complement_Q_ge_3_5_length, max_complement_Q_ge_4_Q, max_complement_Q_ge_4_name, "complement"]])
-    print ("\t").join([str(e) for e in ["max_complement_Q_ge_3_length", max_complement_Q_ge_3_length, max_complement_Q_ge_4_Q, max_complement_Q_ge_4_name, "complement"]])
-    print ("\t").join([str(e) for e in ["max_complement_Q_ge_2.5_length", max_complement_Q_ge_2_5_length, max_complement_Q_ge_4_Q, max_complement_Q_ge_4_name, "complement"]])
+    print ("\t").join([str(e) for e in ["max_complement_Q_ge_3.5_length", max_complement_Q_ge_3_5_length, max_complement_Q_ge_3_5_Q, max_complement_Q_ge_3_5_name, "complement"]])
+    print ("\t").join([str(e) for e in ["max_complement_Q_ge_3_length", max_complement_Q_ge_3_length, max_complement_Q_ge_3_Q, max_complement_Q_ge_3_5_name, "complement"]])
+    print ("\t").join([str(e) for e in ["max_complement_Q_ge_2.5_length", max_complement_Q_ge_2_5_length, max_complement_Q_ge_2_5_Q, max_complement_Q_ge_2_5_name, "complement"]])
     print
 
     ## longest 10

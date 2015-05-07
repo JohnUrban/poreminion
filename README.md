@@ -143,8 +143,8 @@ edgeR (only for kmer 'differential expression' analysis)
 
 Note
 ======
-PoreMinion contains some tools that have been made on top of Aaron Quinlan's and Nick Loman's poretools and others that use other software.
-PoreMinion will requiring additional dependencies on top of what poretools requires (specifically pandas and matplotlib libraries). 
+PoreMinion contains some tools that have been made on top of Aaron Quinlan's and Nick Loman's poretools, and therefore has many of the same dependencies. 
+It also requires additional dependencies on top of what poretools requires (specifically pandas and matplotlib libraries). 
 
 
 INSTALL:

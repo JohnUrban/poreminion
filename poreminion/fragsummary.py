@@ -52,6 +52,20 @@ def summarize_fragstats(fragstats_df, extensive=False, timecheck=False):
     sum_molecules_gt_10kb = sum(fragstats_df['fragsize'][fragstats_df['fragsize'] > 10e3])
     print "sum_molecules_gt_10kb", sum_molecules_gt_10kb
     print "pct_summed_molecules_from_molecules_gt_10kb", 100.0*sum_molecules_gt_10kb/sum_molecule_lengths
+
+    n_molecules_gt_50kb = sum(fragstats_df['fragsize'] > 50e3)
+    print "n_molecules_gt_50kb", n_molecules_gt_50kb
+    print "pct_molecules_gt_50kb", 100.0*n_molecules_gt_50kb/n_molecules
+    sum_molecules_gt_50kb = sum(fragstats_df['fragsize'][fragstats_df['fragsize'] > 50e3])
+    print "sum_molecules_gt_50kb", sum_molecules_gt_50kb
+    print "pct_summed_molecules_from_molecules_gt_50kb", 100.0*sum_molecules_gt_50kb/sum_molecule_lengths
+
+    n_molecules_gt_100kb = sum(fragstats_df['fragsize'] > 100e3)
+    print "n_molecules_gt_100kb", n_molecules_gt_100kb
+    print "pct_molecules_gt_100kb", 100.0*n_molecules_gt_100kb/n_molecules
+    sum_molecules_gt_100kb = sum(fragstats_df['fragsize'][fragstats_df['fragsize'] > 100e3])
+    print "sum_molecules_gt_100kb", sum_molecules_gt_100kb
+    print "pct_summed_molecules_from_molecules_gt_100kb", 100.0*sum_molecules_gt_100kb/sum_molecule_lengths
     print
     
 

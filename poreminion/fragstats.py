@@ -13,6 +13,7 @@ import logging
 logger = logging.getLogger('poreminion')
 logger.setLevel(logging.INFO)
 
+
 ##def get_mean_qscore(f5connection, readtype):
 ##    '''readtpye in 2d, template, complement'''
 ##    if readtype == "2d":
@@ -149,7 +150,7 @@ def get_frag_stats(fast5):
                     fragsize = seqlencomp
                 else:
                     fragsize = seqlentemp
-        else:
+        else: ##template only
             hascomp=0
             seqlencomp = "-"
             numcompevents = "-"
@@ -202,15 +203,18 @@ def get_more_fragstats(f5, hascomp, check_time = False):
     
 
 
-def get_empty_fragstats_dict(extensive=False, timecheck=False):
+def get_empty_fragstats_dict(extensive=False, g4=False, timecheck=False):
     fragstats = {'name':[], 'fragsize':[], 'numevents':[], 'hascomp':[], 'has2d':[], 'numtempevents':[], 'numcompevents':[], 'seqlen2d':[], 'seqlentemp':[], 'seqlencomp':[], 'meanscore2d':[], 'meanscoretemp':[], 'meanscorecomp':[], 'log2_tc_ratio':[], 'channelnum':[], 'heatsink':[], 'numcalledeventstemp':[], 'numcalledeventscomp':[], 'numskipstemp':[], 'numskipscomp':[], 'numstaystemp':[], 'numstayscomp':[], 'strandscoretemp':[], 'strandscorecomp':[], 'numstutterstemp':[],'numstutterscomp':[]}
     if extensive:
         fragstats.update({'starttime':[], 'endtime':[], 'slope':[], 'mean_dur_input':[], 'sd_dur_input':[], 'med_dur_input':[], 'min_dur_input':[], 'max_dur_input':[], 'tmove_0':[], 'tmove_1':[], 'tmove_2':[], 'tmove_3':[],'tmove_4':[], 'tmove_5':[], 'cmove_0':[], 'cmove_1':[], 'cmove_2':[], 'cmove_3':[], 'cmove_4':[], 'cmove_5':[]})
+    if g4:
+        fragstats.update({'numG4in2d':[], 'numG4intemp':[], 'numG4incomp':[], 'numC4in2d':[], 'numC4intemp':[], 'numC4incomp':[]})
     if timecheck:
         fragstats.update({'timeerror':[]})
     return fragstats
 
-def update_fragstats_dict(fragstats, newfrag, extensive=False, timecheck=False):
+
+def update_fragstats_dict(fragstats, newfrag, extensive=False, g4=False, timecheck=False):
     ## fragstats is a fragstats dict -- e.g. output of get_empty_fragstats_dict()
     ## newfrag is a line.split() from a fragstats tab-delim table file
     ## extensive is T/F whether or not the fragstats file is output of --extensive
@@ -293,30 +297,51 @@ def update_fragstats_dict(fragstats, newfrag, extensive=False, timecheck=False):
             fragstats['cmove_3'].append(None)
             fragstats['cmove_4'].append(None)
             fragstats['cmove_5'].append(None)
-    if timecheck and not extensive:
-        fragstats['timeerror'].append(float(newfrag[26]))
-    elif timecheck and extensive:
-        fragstats['timeerror'].append(float(newfrag[46]))
+    if g4: 
+        if not extensive:
+            fragstats['numG4in2d'].append((float(newfrag[26]) if newfrag[26] != "-" else None))
+            fragstats['numG4intemp'].append((float(newfrag[27]) if newfrag[27] != "-" else None))
+            fragstats['numG4incomp'].append((float(newfrag[28]) if newfrag[28] != "-" else None))
+            fragstats['numC4in2d'].append((float(newfrag[29]) if newfrag[29] != "-" else None))
+            fragstats['numC4intemp'].append((float(newfrag[30]) if newfrag[30] != "-" else None))
+            fragstats['numC4incomp'].append((float(newfrag[31]) if newfrag[31] != "-" else None))
+            if timecheck:
+                fragstats['timeerror'].append(float(newfrag[32]))
+        else: ##extensive
+            fragstats['numG4in2d'].append((float(newfrag[46]) if newfrag[46] != "-" else None))
+            fragstats['numG4intemp'].append((float(newfrag[47]) if newfrag[47] != "-" else None))
+            fragstats['numG4incomp'].append((float(newfrag[48]) if newfrag[48] != "-" else None))
+            fragstats['numC4in2d'].append((float(newfrag[49]) if newfrag[49] != "-" else None))
+            fragstats['numC4intemp'].append((float(newfrag[50]) if newfrag[50] != "-" else None))
+            fragstats['numC4incomp'].append((float(newfrag[51]) if newfrag[51] != "-" else None))
+            if timecheck:
+                fragstats['timeerror'].append(float(newfrag[52]))
+    elif not g4:
+        if timecheck and not extensive:
+            fragstats['timeerror'].append(float(newfrag[26]))
+        elif timecheck and extensive:
+            fragstats['timeerror'].append(float(newfrag[46]))
     return fragstats
     
 
 
-def make_fragstats_dict(fragstatsfile, extensive=False, timecheck=False):
+def make_fragstats_dict(fragstatsfile, extensive=False, g4=False, timecheck=False):
     ## fragstatsfile is a fragstats tab-delim table file
-    fragstats = get_empty_fragstats_dict(extensive, timecheck)
+    fragstats = get_empty_fragstats_dict(extensive, g4, timecheck) 
     for line in open(fragstatsfile,'r'):
         newfrag = line.strip().split("\t")
-        fragstats = update_fragstats_dict(fragstats, newfrag, extensive, timecheck)
+        fragstats = update_fragstats_dict(fragstats, newfrag, extensive, g4, timecheck) 
     return fragstats
 
-def make_fragstats_dataframe(fragstatsfile, extensive=False, timecheck=False):
+def make_fragstats_dataframe(fragstatsfile, extensive=False, g4=False, timecheck=False):
     ## TODO(?): could actually use pandas.read_table()
-    return pandas.DataFrame(make_fragstats_dict(fragstatsfile, extensive, timecheck))
+    return pandas.DataFrame(make_fragstats_dict(fragstatsfile, extensive, g4, timecheck))
 
 
 
 def plot_fragstats():
     pass
+
 
 
 def frag_fxn(fast5, args):

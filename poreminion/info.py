@@ -163,6 +163,7 @@ def run(parser, args):
     if args.basic:
         f5 = h5py.File(args.fast5)
         basecalled = is_basecalled(f5)
+        print get_basename(f5)
         print get_minknow_version(f5)
         if basecalled:
             print get_basecaller_events_limits(f5)

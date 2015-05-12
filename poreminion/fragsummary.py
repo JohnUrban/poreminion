@@ -3,7 +3,7 @@ from fragstats import *
 ## TODO 4/23/15-- break this hard-coded monster up into functions
 ## there is a lot of repeated pieces of code - tighten it up, shrink it
 
-def summarize_fragstats(fragstats_df, extensive=False, timecheck=False):
+def summarize_fragstats(fragstats_df, extensive=False, g4=False, timecheck=False):
     ## fragstats_df is dataframe from make_fragstats_dataframe()
     has2d = fragstats_df['has2d'] == 1
     hascomp = fragstats_df['hascomp'] == 1
@@ -634,8 +634,139 @@ def summarize_fragstats(fragstats_df, extensive=False, timecheck=False):
         print "max_pct_4_moves", "complement", max_pct_cevents_move_4, fragstats_df['numevents'][maxidx_pct_cevents_move_4], nonetodash(fragstats_df['seqlen2d'][maxidx_pct_cevents_move_4]), nonetodash(fragstats_df['seqlentemp'][maxidx_pct_cevents_move_4]), nonetodash(fragstats_df['seqlencomp'][maxidx_pct_cevents_move_4]), nonetodash(fragstats_df['meanscore2d'][maxidx_pct_cevents_move_4]), nonetodash(fragstats_df['meanscoretemp'][maxidx_pct_cevents_move_4]), nonetodash(fragstats_df['meanscorecomp'][maxidx_pct_cevents_move_4]), fragstats_df['name'][maxidx_pct_cevents_move_4]
         print "min_pct_5_moves", "complement", min_pct_cevents_move_5, fragstats_df['numevents'][minidx_pct_cevents_move_5], nonetodash(fragstats_df['seqlen2d'][minidx_pct_cevents_move_5]), nonetodash(fragstats_df['seqlentemp'][minidx_pct_cevents_move_5]), nonetodash(fragstats_df['seqlencomp'][minidx_pct_cevents_move_5]), nonetodash(fragstats_df['meanscore2d'][minidx_pct_cevents_move_5]), nonetodash(fragstats_df['meanscoretemp'][minidx_pct_cevents_move_5]), nonetodash(fragstats_df['meanscorecomp'][minidx_pct_cevents_move_5]), fragstats_df['name'][minidx_pct_cevents_move_5]
         print "max_pct_5_moves", "complement", max_pct_cevents_move_5, fragstats_df['numevents'][maxidx_pct_cevents_move_5], nonetodash(fragstats_df['seqlen2d'][maxidx_pct_cevents_move_5]), nonetodash(fragstats_df['seqlentemp'][maxidx_pct_cevents_move_5]), nonetodash(fragstats_df['seqlencomp'][maxidx_pct_cevents_move_5]), nonetodash(fragstats_df['meanscore2d'][maxidx_pct_cevents_move_5]), nonetodash(fragstats_df['meanscoretemp'][maxidx_pct_cevents_move_5]), nonetodash(fragstats_df['meanscorecomp'][maxidx_pct_cevents_move_5]), fragstats_df['name'][maxidx_pct_cevents_move_5]
+    if g4:
+        g4intemp = fragstats_df['numG4intemp'] >= 1
+        g4incomp = fragstats_df['numG4incomp'] >= 1
+        g4in2d = fragstats_df['numG4in2d'] >= 1
+
+        ## Q score distribution for reads with G4 motif in specific read
+        ## 2D -- G4 in 2D
+        print "Q score distribution for reads with G4 motif in specific read type:"
+        mean_2d_Q = fragstats_df['meanscore2d'][g4in2d].mean()
+        median_2d_Q = fragstats_df['meanscore2d'][g4in2d].median()
+        std_2d_Q = fragstats_df['meanscore2d'][g4in2d].std()
+        min_2d_Q_idx = fragstats_df['meanscore2d'][g4in2d].idxmin()
+        max_2d_Q_idx = fragstats_df['meanscore2d'][g4in2d].idxmax()
+        min_2d_Q = fragstats_df['meanscore2d'][min_2d_Q_idx]
+        max_2d_Q = fragstats_df['meanscore2d'][max_2d_Q_idx]
+        min_2d_Q_length = fragstats_df['seqlen2d'][min_2d_Q_idx]
+        max_2d_Q_length = fragstats_df['seqlen2d'][max_2d_Q_idx]
+        min_2d_Q_name = fragstats_df['name'][min_2d_Q_idx]
+        max_2d_Q_name = fragstats_df['name'][max_2d_Q_idx]
         
-##    move tc ratios -- is there a pattern?
+        ## Template -- G4 in temp
+        mean_temp_Q = fragstats_df['meanscoretemp'][g4intemp].mean()
+        median_temp_Q = fragstats_df['meanscoretemp'][g4intemp].median()
+        std_temp_Q = fragstats_df['meanscoretemp'][g4intemp].std()
+        min_temp_Q_idx = fragstats_df['meanscoretemp'][g4intemp].idxmin()
+        max_temp_Q_idx = fragstats_df['meanscoretemp'][g4intemp].idxmax()
+        min_temp_Q = fragstats_df['meanscoretemp'][min_temp_Q_idx]
+        max_temp_Q = fragstats_df['meanscoretemp'][max_temp_Q_idx]
+        min_temp_Q_length = fragstats_df['seqlentemp'][min_temp_Q_idx]
+        max_temp_Q_length = fragstats_df['seqlentemp'][max_temp_Q_idx]
+        min_temp_Q_name = fragstats_df['name'][min_temp_Q_idx]
+        max_temp_Q_name = fragstats_df['name'][max_temp_Q_idx]
+        
+        ## Complement -- G4 in comp
+        mean_comp_Q = fragstats_df['meanscorecomp'][g4incomp].mean()
+        median_comp_Q = fragstats_df['meanscorecomp'][g4incomp].median()
+        std_comp_Q = fragstats_df['meanscorecomp'][g4incomp].std()
+        min_comp_Q_idx = fragstats_df['meanscorecomp'][g4incomp].idxmin()
+        max_comp_Q_idx = fragstats_df['meanscorecomp'][g4incomp].idxmax()
+        min_comp_Q = fragstats_df['meanscorecomp'][min_comp_Q_idx]
+        max_comp_Q = fragstats_df['meanscorecomp'][max_comp_Q_idx]
+        min_comp_Q_length = fragstats_df['seqlencomp'][min_comp_Q_idx]
+        max_comp_Q_length = fragstats_df['seqlencomp'][max_comp_Q_idx]
+        min_comp_Q_name = fragstats_df['name'][min_comp_Q_idx]
+        max_comp_Q_name = fragstats_df['name'][max_comp_Q_idx]
+        
+        print ("\t").join(["metric", "Q", "length", "read_type", "name"])
+        print ("\t").join([str(e) for e in ["median_Q_2d", median_2d_Q, "-", "2D", "-"]])
+        print ("\t").join([str(e) for e in ["mean_Q_2d", mean_2d_Q, "-", "2D", "-"]])
+        print ("\t").join([str(e) for e in ["std_dev_Q_2d", std_2d_Q, "-", "2D", "-"]])
+        print ("\t").join([str(e) for e in ["min_Q_2d", min_2d_Q, min_2d_Q_length, "2D", min_2d_Q_name]])
+        print ("\t").join([str(e) for e in ["max_Q_2d", max_2d_Q, max_2d_Q_length, "2D", max_2d_Q_name]])
+        print
+        print ("\t").join(["metric", "Q", "length", "read_type", "name"])
+        print ("\t").join([str(e) for e in ["median_Q_template", median_temp_Q, "-", "template", "-"]])
+        print ("\t").join([str(e) for e in ["mean_Q_template", mean_temp_Q, "-", "template", "-"]])
+        print ("\t").join([str(e) for e in ["std_dev_Q_template", std_temp_Q, "-", "template", "-"]])
+        print ("\t").join([str(e) for e in ["min_Q_template", min_temp_Q, min_temp_Q_length, "template", min_temp_Q_name]])
+        print ("\t").join([str(e) for e in ["max_Q_template", max_temp_Q, max_temp_Q_length, "template", max_temp_Q_name]])
+        print
+        print ("\t").join(["metric", "Q", "length", "read_type", "name"])
+        print ("\t").join([str(e) for e in ["median_Q_complement", median_comp_Q, "-", "complement", "-"]])
+        print ("\t").join([str(e) for e in ["mean_Q_complement", mean_comp_Q, "-", "complement", "-"]])
+        print ("\t").join([str(e) for e in ["std_dev_Q_complement", std_comp_Q, "-", "complement", "-"]])
+        print ("\t").join([str(e) for e in ["min_Q_complement", min_comp_Q, min_comp_Q_length, "complement", min_comp_Q_name]])
+        print ("\t").join([str(e) for e in ["max_Q_complement", max_comp_Q, max_comp_Q_length, "complement", max_comp_Q_name]])
+        print
+
+        ## Q score distribution for reads with G4 motif in at least 1 read type
+        hasg4 = g4intemp | g4incomp | g4in2d ## intemp or incomp or in2d
+        print "Q score distribution for reads with G4 motif in any read type:"
+        ## 2D -- G4 in Template OR Complement OR 2D
+        mean_2d_Q = fragstats_df['meanscore2d'][hasg4].mean()
+        median_2d_Q = fragstats_df['meanscore2d'][hasg4].median()
+        std_2d_Q = fragstats_df['meanscore2d'][hasg4].std()
+        min_2d_Q_idx = fragstats_df['meanscore2d'][hasg4].idxmin()
+        max_2d_Q_idx = fragstats_df['meanscore2d'][hasg4].idxmax()
+        min_2d_Q = fragstats_df['meanscore2d'][min_2d_Q_idx]
+        max_2d_Q = fragstats_df['meanscore2d'][max_2d_Q_idx]
+        min_2d_Q_length = fragstats_df['seqlen2d'][min_2d_Q_idx]
+        max_2d_Q_length = fragstats_df['seqlen2d'][max_2d_Q_idx]
+        min_2d_Q_name = fragstats_df['name'][min_2d_Q_idx]
+        max_2d_Q_name = fragstats_df['name'][max_2d_Q_idx]
+        
+        ## Template -- G4 in Template OR Complement OR 2D
+        mean_temp_Q = fragstats_df['meanscoretemp'][hasg4].mean()
+        median_temp_Q = fragstats_df['meanscoretemp'][hasg4].median()
+        std_temp_Q = fragstats_df['meanscoretemp'][hasg4].std()
+        min_temp_Q_idx = fragstats_df['meanscoretemp'][hasg4].idxmin()
+        max_temp_Q_idx = fragstats_df['meanscoretemp'][hasg4].idxmax()
+        min_temp_Q = fragstats_df['meanscoretemp'][min_temp_Q_idx]
+        max_temp_Q = fragstats_df['meanscoretemp'][max_temp_Q_idx]
+        min_temp_Q_length = fragstats_df['seqlentemp'][min_temp_Q_idx]
+        max_temp_Q_length = fragstats_df['seqlentemp'][max_temp_Q_idx]
+        min_temp_Q_name = fragstats_df['name'][min_temp_Q_idx]
+        max_temp_Q_name = fragstats_df['name'][max_temp_Q_idx]
+        
+        ## Complement -- G4 in Template OR Complement OR 2D 
+        mean_comp_Q = fragstats_df['meanscorecomp'][hasg4].mean()
+        median_comp_Q = fragstats_df['meanscorecomp'][hasg4].median()
+        std_comp_Q = fragstats_df['meanscorecomp'][hasg4].std()
+        min_comp_Q_idx = fragstats_df['meanscorecomp'][hasg4].idxmin()
+        max_comp_Q_idx = fragstats_df['meanscorecomp'][hasg4].idxmax()
+        min_comp_Q = fragstats_df['meanscorecomp'][min_comp_Q_idx]
+        max_comp_Q = fragstats_df['meanscorecomp'][max_comp_Q_idx]
+        min_comp_Q_length = fragstats_df['seqlencomp'][min_comp_Q_idx]
+        max_comp_Q_length = fragstats_df['seqlencomp'][max_comp_Q_idx]
+        min_comp_Q_name = fragstats_df['name'][min_comp_Q_idx]
+        max_comp_Q_name = fragstats_df['name'][max_comp_Q_idx]
+        
+        print ("\t").join(["metric", "Q", "length", "read_type", "name"])
+        print ("\t").join([str(e) for e in ["median_Q_2d", median_2d_Q, "-", "2D", "-"]])
+        print ("\t").join([str(e) for e in ["mean_Q_2d", mean_2d_Q, "-", "2D", "-"]])
+        print ("\t").join([str(e) for e in ["std_dev_Q_2d", std_2d_Q, "-", "2D", "-"]])
+        print ("\t").join([str(e) for e in ["min_Q_2d", min_2d_Q, min_2d_Q_length, "2D", min_2d_Q_name]])
+        print ("\t").join([str(e) for e in ["max_Q_2d", max_2d_Q, max_2d_Q_length, "2D", max_2d_Q_name]])
+        print
+        print ("\t").join(["metric", "Q", "length", "read_type", "name"])
+        print ("\t").join([str(e) for e in ["median_Q_template", median_temp_Q, "-", "template", "-"]])
+        print ("\t").join([str(e) for e in ["mean_Q_template", mean_temp_Q, "-", "template", "-"]])
+        print ("\t").join([str(e) for e in ["std_dev_Q_template", std_temp_Q, "-", "template", "-"]])
+        print ("\t").join([str(e) for e in ["min_Q_template", min_temp_Q, min_temp_Q_length, "template", min_temp_Q_name]])
+        print ("\t").join([str(e) for e in ["max_Q_template", max_temp_Q, max_temp_Q_length, "template", max_temp_Q_name]])
+        print
+        print ("\t").join(["metric", "Q", "length", "read_type", "name"])
+        print ("\t").join([str(e) for e in ["median_Q_complement", median_comp_Q, "-", "complement", "-"]])
+        print ("\t").join([str(e) for e in ["mean_Q_complement", mean_comp_Q, "-", "complement", "-"]])
+        print ("\t").join([str(e) for e in ["std_dev_Q_complement", std_comp_Q, "-", "complement", "-"]])
+        print ("\t").join([str(e) for e in ["min_Q_complement", min_comp_Q, min_comp_Q_length, "complement", min_comp_Q_name]])
+        print ("\t").join([str(e) for e in ["max_Q_complement", max_comp_Q, max_comp_Q_length, "complement", max_comp_Q_name]])
+        print
+
+
     if timecheck:
         n_time_errors = sum(fragstats_df['timeerror'])
         pct_time_errors = 100.0*n_time_errors/n_molecules
@@ -652,8 +783,8 @@ def nonetodash(x):
         return x
 
 def run(parser, args):
-    fragstats_df = make_fragstats_dataframe(args.fragfile, extensive=args.extensive, timecheck=args.checktime)
-    summarize_fragstats(fragstats_df, extensive=args.extensive, timecheck=args.checktime)
+    fragstats_df = make_fragstats_dataframe(args.fragfile, extensive=args.extensive, g4=args.quadruplex, timecheck=args.checktime)
+    summarize_fragstats(fragstats_df, extensive=args.extensive, g4=args.quadruplex, timecheck=args.checktime)
 
 
 

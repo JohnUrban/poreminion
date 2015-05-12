@@ -256,6 +256,10 @@ One can raise the sensitivity (while lowering the specificity), for example, by 
                                action="store_true", required=False, default=False,
                               help='''Use this flag if the fragstats file was generated with -e/--extensive option.
                                     ''')
+    parser_fragsummary.add_argument('--quadruplex', "-g4",
+                               action="store_true", required=False, default=False,
+                              help='''Use this flag if the fragstats file was generated with -g4/--quadruplex option.
+                                    ''')
     parser_fragsummary.add_argument('--checktime', "-t",
                                action="store_true", required=False, default=False,
                               help='''Use this flag if the fragstats file was generated with -t/--checktime option.''')

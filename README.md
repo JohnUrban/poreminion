@@ -172,7 +172,7 @@ pip install matplotlib
 
 
 Please cite poreminion as:
-
+-------------------------------------------
 Urban, J. M., Bliss, J., Lawrence, C. E. & Gerbi, S. A. 
 
 Sequencing ultra-long DNA molecules with the Oxford Nanopore MinION. 

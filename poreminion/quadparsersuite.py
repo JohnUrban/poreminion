@@ -171,10 +171,13 @@ def run(parser, args):
         args.outformat = 'name,start,end,strand,seq'                                                      
     if args.counts:
         args.outformat = 'name,pos,neg'
-    if args.numtracts:
-        args.numtracts = int(args.minG)
-        if not args.counts:
-            args.outformat += ",gtracts"
+    if args.command == 'g4':
+        if args.numtracts:
+            args.numtracts = int(args.minG)
+            if not args.counts:
+                args.outformat += ",gtracts"
+    elif args.command == "regex":
+        args.numtracts = False
 
     ## allow fasta and fastq files be piped in as stdin
     if args.fastx == '-':

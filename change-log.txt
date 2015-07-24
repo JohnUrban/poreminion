@@ -1,3 +1,15 @@
+0.4.4 -- July 24, 2015
+Updated:
+- fragsummary: 
+   --> reports on molecules >50kb and >100kb now (in addition to >10kb)
+   --> some print out variables needed to be fixed
+- g4/regex
+  --> g4/regex call on a lot of the same code. some updates to g4 broke the more general usage of regex. now fixed.
+Other notes:
+- since last version updates to fragstats, fragsummary, info, and main were made
+- a license was added
+- a citation was added to be used when citing poreminion
+
 0.4.3 -- May 5, 2015
 Updated:
 - g4: now can count number of g-tracts inside identified g4 motif

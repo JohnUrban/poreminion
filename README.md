@@ -1,4 +1,4 @@
-poreminion - 0.4.3 (May 5, 2015)
+poreminion - 0.4.4 (July 24, 2015)
 ==========
 
 Additional tools for analyzing Oxford Nanopore minION data by John Urban. 
